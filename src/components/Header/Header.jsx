@@ -1,23 +1,29 @@
 import './Header.css';
-import { Link } from 'react-router-dom';
-import Logo from '../../images/logo.svg';
+import Logo from '../../image/logo.svg';
 import NavTab from '../NavTab/NavTab';
+import { Link, useLocation } from 'react-router-dom';
 
 function Header() {
-    return (
-        <Header className='header'>
-            <Link
-                to='/'
-                className='header__link'
-            >
-                <img
-                    src={Logo}
-                    alt='Логотип'
-                />
-            </Link>
-            <NavTab />
-        </Header>
-    );
-}
+  const location = useLocation();
 
+  return (
+    <header
+      className={`header header_theme_${location.pathname === '/' ? 'mazarine' : 'dark'
+        }`}
+    >
+      <div className="header__container">
+        <Link
+          to="/"
+          className="header__link"
+        >
+          <img
+            src={Logo}
+            alt="Логотип"
+          />
+        </Link>
+        <NavTab />
+      </div>
+    </header>
+  );
+}
 export default Header;
