@@ -3,6 +3,7 @@ import Avatar from '../../image/photo_2021-09-27_01-07-17.jpg';
 
 function AboutMe() {
     return (
+        <>
         <section className='about-me'>
             <div className='about-me__container'>
                 <h2 className="section-title">Студент</h2>
@@ -30,6 +31,7 @@ function AboutMe() {
                 </div>
             </div>
         </section>
+        </>
     );
 }
 
