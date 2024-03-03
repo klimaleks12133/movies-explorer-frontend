@@ -27,6 +27,7 @@
     line-height: 1.21;
     box-sizing: border-box;
     padding: 15px 22px;
+    border-bottom: 1px solid rgba(170, 170, 170, 0.2);
 }
 
 .search__input::placeholder {
@@ -46,7 +47,7 @@
 .search__button {
     border: none;
     background-color: #4285f4;
-    background-image: url('../../image/icon-poisk.svg');
+    background-image: url('../../image/find.svg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: 34px 34px;
@@ -64,4 +65,66 @@
 
 .search__button:hover {
     opacity: 0.8;
+}
+
+@media screen and (max-width: 800px) {
+    .search {
+        padding: 60px 30px 20px;
+    }
+
+    .search__container {
+        margin-bottom: 37px;
+    }
+
+    .search__form {
+        flex-direction: column;
+        margin-bottom: 0;
+    }
+
+    .search__input {
+        padding: 14px 18px;
+        margin-bottom: 0;
+    }
+
+    .search__button {
+        top: -11px;
+        right: 7px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .search {
+        padding: 60px 12px 42px;
+    }
+
+    .search__container {
+        margin-bottom: 41px;
+    }
+
+    .search__input {
+        padding: 14px 14px;
+        padding: 14px 18px;
+        font-size: 11px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 18px;
+    }
+
+    .search__button {
+        top: -11px;
+        right: 5px;
+    }
+
+    .search__form {
+        margin-bottom: 3px;
+    }
+
+    .search__form::before {
+        content: none;
+    }
+
+    .search__error {
+        font-size: 10px;
+        top: 60px;
+    }
 }

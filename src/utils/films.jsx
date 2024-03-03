@@ -18,66 +18,82 @@ import img16 from './films/pic__COLOR_pic15.svg';
 const films = [
     {
         id: 1,
+        nameRU: '33 слова о дизайне',
         image: `${img1}`,
     },
     {
         id: 2,
+        nameRU: '33 слова о дизайне',
         image: `${img2}`,
     },
     {
         id: 3,
+        nameRU: '33 слова о дизайне',
         image: `${img3}`,
     },
     {
         id: 4,
+        nameRU: '33 слова о дизайне',
         image: `${img4}`,
     },
     {
         id: 5,
+        nameRU: '33 слова о дизайне',
         image: `${img5}`,
     },
     {
         id: 6,
+        nameRU: '33 слова о дизайне',
         image: `${img6}`,
     },
     {
         id: 7,
+        nameRU: '33 слова о дизайне',
         image: `${img7}`,
     },
     {
         id: 8,
+        nameRU: '33 слова о дизайне',
         image: `${img8}`,
     },
     {
         id: 9,
+        nameRU: '33 слова о дизайне',
         image: `${img9}`,
     },
     {
         id: 10,
+        nameRU: '33 слова о дизайне',
         image: `${img10}`,
     },
     {
         id: 11,
+        nameRU: '33 слова о дизайне',
         image: `${img11}`,
     },
     {
         id: 12,
+        nameRU: '33 слова о дизайне',
         image: `${img12}`,
     },
     {
         id: 13,
+        nameRU: '33 слова о дизайне',
         image: `${img13}`,
     },
     {
         id: 14,
+        nameRU: '33 слова о дизайне',
         image: `${img14}`,
     },
     {
         id: 15,
+        nameRU: '33 слова о дизайне',
         image: `${img15}`,
     },
     {
         id: 16,
+        nameRU: '33 слова о дизайне',
         image: `${img16}`,
     },
 ];

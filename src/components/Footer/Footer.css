@@ -55,3 +55,41 @@
 .footer__link:hover {
     opacity: 0.7;
 }
+
+@media screen and (max-width: 800px) {
+    .footer__container {
+        padding: 0 30px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .footer__container {
+        padding: 0 10px;
+    }
+
+    .footer__title {
+        font-size: 12px;
+        padding: 0 0 21px;
+    }
+
+    .footer__info {
+        flex-direction: column-reverse;
+        padding: 25px 0 0;
+    }
+
+    .footer__info-data {
+        font-size: 12px;
+        margin: 30px 0 20px;
+        color: rgba(139, 139, 139, 1);
+    }
+
+    .footer__links {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .footer__link {
+        font-size: 12px;
+        line-height: normal;
+    }
+}
