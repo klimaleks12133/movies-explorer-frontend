@@ -10,6 +10,7 @@ function Navigation(isLoggedIn, logIn) {
           <Link to="/signin" className="navigation__link navigation__link_active" onClick={logIn}>Войти</Link>
         </nav>
       ) : (
+        
         <nav className="navigation">
           <NavLink to="/movies" className="navigation__link navigation__link_film">Фильмы</NavLink>
           <NavLink to="/saved-movies" className="navigation__link navigation__link_save-film">Сохранённые фильмы</NavLink>

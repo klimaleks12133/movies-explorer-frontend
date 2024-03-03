@@ -6,7 +6,7 @@ function Footer() {
             <div className='footer__container'>
                 <h3 className='footer__title'>Учебный проект Яндекс.Практикум х BeatFilm.</h3>
                 <div className='footer__info'>
-                    <p className="footer__info-data">© {new Date().getFullYear()}</p>
+                    <p className="footer__info-data">© 2024</p>
                     <div className='footer__liks'>
                     <a
                             href="https://practicum.yandex.ru/"
