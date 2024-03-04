@@ -33,7 +33,7 @@ const MoviesCard = (props) => {
                     ) : (
                         <button
                             type="button"
-                            className="movies-card__button movies-card__button_type_unsave"
+                            className="movies-card__button movies-card__button_unsave"
                             aria-label="Удалить фильм из сохранённых"
                             title="Удалить фильм из сохранённых"
                         ></button>

@@ -16,7 +16,7 @@ function MoviesCardList() {
                     );
                 })}
             </ul>
-            <button className="movies-cards__add-button" type="button">Ещё</button>
+            <button className="movies-cards__button" type="button">Ещё</button>
         </section>
     )
 }

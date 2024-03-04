@@ -64,11 +64,11 @@
     cursor: pointer;
 }
 
-.movies-card__button_type_unsave:hover {
+.movies-card__button_unsave:hover {
     opacity: 0.8;
 }
 
-.movies-card__button_type_unsave {
+.movies-card__button_unsave {
     background-image: url('../../image/btn-close.svg');
     opacity: 0;
 }

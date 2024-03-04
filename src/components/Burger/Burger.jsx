@@ -10,12 +10,12 @@ function BurgerMenu() {
     };
     return (
         <section
-            className={`${!isActiveBurger ? 'burger' : 'burger burger_type_active'}`}
+            className={`${!isActiveBurger ? 'burger' : 'burger burger_active'}`}
         >
             <nav
                 className={`${!isActiveBurger
                     ? 'burger__container'
-                    : 'burger__container burger__container_type_active'
+                    : 'burger__container burger__container_active'
                     }`}
             >
                 <div className="burger-btn__container">
@@ -24,13 +24,13 @@ function BurgerMenu() {
                         onClick={handleOpenBurger}
                         className={`${!isActiveBurger
                             ? 'burger-btn'
-                            : 'burger-btn burger-btn_type_active'
+                            : 'burger-btn burger-btn_active'
                             }`}
                     >
                         <span
                             className={`${!isActiveBurger
                                 ? 'burger-span'
-                                : 'burger-span burger-span_type_active'
+                                : 'burger-span burger-span_active'
                                 }`}
                         ></span>
                     </button>
@@ -63,10 +63,10 @@ function BurgerMenu() {
                                 </NavLink>
                             </li>
                         </ul>
-                        <div className="burger-menu__links burger-menu__links_type_account">
+                        <div className="burger-menu__links burger-menu__links_account">
                             <NavLink
                                 to="/profile"
-                                className="burger-menu__link burger-menu__link_type_account"
+                                className="burger-menu__link burger-menu__link_account"
                             >
                                 Аккаунт
                             </NavLink>

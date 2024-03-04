@@ -22,7 +22,7 @@
     border-top: 1px solid rgba(170, 170, 170, 0.2)
 }
 
-.movies-cards__add-button {
+.movies-cards__button {
     width: 320px;
     background-color: #2f2f2f;
     border-radius: 6px;
@@ -39,7 +39,7 @@
     line-height: normal;
 }
 
-.movies-cards__add-button:hover {
+.movies-cards__button:hover {
     opacity: 0.6;
 }
 
@@ -56,7 +56,7 @@
         row-gap: 30px;
     }
 
-    .movies-cards__add-button {
+    .movies-cards__button {
         margin-top: 79px;
     }
 }
