@@ -140,3 +140,45 @@
     color: #8b8b8b;
     text-align: center;
 }
+
+@media screen and (max-width: 500px) {
+    .register {
+        padding-top: 52px;
+    }
+
+    .register__form {
+        align-items: center;
+        gap: 50px;
+        max-width: 260px;
+        flex: 0;
+    }
+
+    .register__labels-container {
+        margin-top: 30px;
+    }
+
+    .register__button {
+        font-size: 12px;
+        line-height: 1.25;
+        margin-top: 130px;
+    }
+
+    .register__support {
+        font-size: 12px;
+        line-height: 1.25;
+    }
+
+    .register__link {
+        padding-left: 4px;
+    }
+}
+
+@media screen and (max-width: 330px) {
+    .register__link {
+        padding-left: 0;
+    }
+
+    .register__support {
+        margin: 14px 0 0;
+    }
+}

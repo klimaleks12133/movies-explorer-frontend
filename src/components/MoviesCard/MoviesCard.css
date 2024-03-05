@@ -4,6 +4,7 @@
     border-radius: 10px;
     background-color: #222;
     width: inherit;
+    font-family: 'Inter', 'SuisseIntl', sans-serif;
 }
 
 .movies-card__item {

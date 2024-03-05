@@ -1,11 +1,12 @@
 .about-me {
     width: 100%;
+    font-family: 'Inter', 'SuisseIntl', sans-serif;
 }
 
 .about-me__container {
     max-width: 1280px;
     min-width: 320px;
-    padding: 93px 70px 0;
+    padding: 111px 70px 0;
     margin: 0 auto;
     box-sizing: border-box;
 }
@@ -26,7 +27,7 @@
     font-weight: 400;
     font-size: 50px;
     line-height: 58px;
-    margin: 48px 0 0;
+    margin: 65px 0 0;
     letter-spacing: -2px;
 }
 
@@ -63,7 +64,7 @@
     width: 270px;
     border-radius: 10px;
     object-fit: cover;
-    margin: 47px 0 0;
+    margin: 66px 0 0;
 }
 
 @media screen and (max-width: 800px) {
@@ -109,7 +110,7 @@
     }
 }
 
-@media screen and (max-width: 460px) {
+@media screen and (max-width: 480px) {
     .about-me__container {
         padding: 51px 15px 0;
     }

@@ -10,38 +10,38 @@ function BurgerMenu() {
     };
     return (
         <section
-            className={`${!isActiveBurger ? 'burger' : 'burger burger_active'}`}
+            className={`${!isActiveBurger ? 'burger' : 'burger burger_type_active'}`}
         >
             <nav
                 className={`${!isActiveBurger
-                    ? 'burger__container'
-                    : 'burger__container burger__container_active'
+                        ? 'burger__navigation'
+                        : 'burger__navigation burger__navigation_type_active'
                     }`}
             >
-                <div className="burger-btn__container">
+                <div className="burger__container">
                     <button
                         type="button"
                         onClick={handleOpenBurger}
                         className={`${!isActiveBurger
-                            ? 'burger-btn'
-                            : 'burger-btn burger-btn_active'
+                                ? 'burger__button'
+                                : 'burger__button burger__button_type_active'
                             }`}
                     >
                         <span
                             className={`${!isActiveBurger
-                                ? 'burger-span'
-                                : 'burger-span burger-span_active'
+                                    ? 'burger__span'
+                                    : 'burger__span burger__span_type_active'
                                 }`}
                         ></span>
                     </button>
                 </div>
                 {isActiveBurger ? (
                     <>
-                        <ul className="burger-menu__links">
+                        <ul className="burger__links">
                             <li>
                                 <NavLink
                                     to="/"
-                                    className="burger-menu__link"
+                                    className="burger__link"
                                 >
                                     Главная
                                 </NavLink>
@@ -49,7 +49,7 @@ function BurgerMenu() {
                             <li>
                                 <NavLink
                                     to="/movies"
-                                    className="burger-menu__link"
+                                    className="burger__link"
                                 >
                                     Фильмы
                                 </NavLink>
@@ -57,20 +57,20 @@ function BurgerMenu() {
                             <li>
                                 <NavLink
                                     to="/saved-movies"
-                                    className="burger-menu__link"
+                                    className="burger__link"
                                 >
                                     Сохранённые фильмы
                                 </NavLink>
                             </li>
                         </ul>
-                        <div className="burger-menu__links burger-menu__links_account">
+                        <div className="burger__links burger__links_type_account">
                             <NavLink
                                 to="/profile"
-                                className="burger-menu__link burger-menu__link_account"
+                                className="burger__link burger__link_type_account"
                             >
                                 Аккаунт
                             </NavLink>
-                            <div className="burger-menu__link-icon"></div>
+                            <div className="burger__link-icon"></div>
                         </div>
                     </>
                 ) : (

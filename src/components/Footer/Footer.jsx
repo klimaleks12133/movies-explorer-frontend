@@ -7,7 +7,7 @@ function Footer() {
                 <h3 className='footer__title'>Учебный проект Яндекс.Практикум х BeatFilm.</h3>
                 <div className='footer__info'>
                     <p className="footer__info-data">© 2024</p>
-                    <div className='footer__liks'>
+                    <div className='footer__links'>
                     <a
                             href="https://practicum.yandex.ru/"
                             target="_blank"
