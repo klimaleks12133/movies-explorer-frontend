@@ -2,15 +2,15 @@ import './Login.css';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../image/logo.svg';
-import FormValidation from '../Hooks/FormValidation';
+import FormValidation from '../../hooks/FormValidation';
 
-const Login = ({ logIn }) => {
+const Login = ({ loginUser }) => {
     const { values, handleChange, resetForm, errors, isValid } =
         FormValidation();
 
     function handleSubmit(e) {
         e.preventDefault();
-        logIn(values);
+        loginUser(values);
     }
 
     useEffect(() => {
@@ -72,7 +72,6 @@ const Login = ({ logIn }) => {
                         type="submit"
                         className={`login__button ${!isValid && 'login__button_disabled'}`}
                         disabled={!isValid}
-                        nClick={logIn}
                     >
                         Войти
                     </button>

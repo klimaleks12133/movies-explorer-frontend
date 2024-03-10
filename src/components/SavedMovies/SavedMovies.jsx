@@ -10,5 +10,4 @@ const SavedMovies = () => {
     </main>
   );
 };
-
 export default SavedMovies;

@@ -1,33 +1,32 @@
-import './SearchForm.css'
-import FormValidation from '../Hooks/FormValidation';
+import './SearchForm.css';
 import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
 
-function SearchForm() {
-    const { values, handleChange } = FormValidation();
-    return (
-        <section className='search'>
-            <form className='search__form'
-                name='form'
-                noValidate>
-                <input
-                    className="search__input"
-                    name="search"
-                    type="text"
-                    placeholder="Фильм"
-                    autoComplete="off"
-                    value={values.search || ''}
-                    onChange={handleChange}
-                    required
-                />
-                <span className="search__error"></span>
-                <button
-                    className='search__button'
-                    type='submit'>
-                </button>
-            </form>
-            <FilterCheckbox />
-        </section>
-    )
-}
-
+const SearchForm = () => {
+  return (
+    <section className="search">
+      <form
+        className="search__form"
+        name="search"
+        noValidate
+      >
+        <div className="search__container">
+          <input
+            className="search__input"
+            name="search"
+            type="text"
+            placeholder="Фильм"
+            autoComplete="off"
+            required
+          />
+          <button
+            className="search__button"
+            type="submit"
+          ></button>
+        </div>
+        <span className="search__error"></span>
+        <FilterCheckbox />
+      </form>
+    </section>
+  );
+};
 export default SearchForm;

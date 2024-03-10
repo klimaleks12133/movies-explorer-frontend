@@ -155,3 +155,84 @@
 .profile__button-exit:hover {
     opacity: 0.8;
 }
+
+.profile__button-save {
+    padding: 14px 168px;
+    background-color: #3ddc84;
+    color: aliceblue;
+}
+
+.profile__button-save_disabled {
+    background-color: rgba(248, 248, 248, 1);
+    color: #424242;
+}
+
+@media screen and (max-width: 800px) {
+    .profile {
+        margin: 236px auto;
+    }
+
+    .profile__form {
+        min-height: 445px;
+        gap: 96px;
+    }
+
+    .profile__label[type='name'] {
+        padding-bottom: 18px;
+        margin: 0 0 16px;
+    }
+
+    .profile__button-container {
+        margin-top: 113px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .profile {
+        margin-top: 68px;
+        justify-content: flex-start;
+        height: 100vh;
+    }
+
+    .profile__input {
+        max-width: 226px;
+    }
+
+    .profile__form {
+        max-width: 260px;
+        min-height: 500px;
+        flex: 1;
+        gap: 81px;
+    }
+
+    .profile__label[type='name'] {
+        padding-bottom: 16px;
+        margin: 0 0 18px;
+    }
+
+    .profile__button-container {
+        margin-top: 62px;
+    }
+
+    .profile__button-edit {
+        font-size: 12px;
+        line-height: 1.25;
+    }
+
+    .profile__button-exit {
+        font-size: 12px;
+        line-height: 1.25;
+    }
+
+    .profile__error {
+        bottom: 220px;
+    }
+
+    .profile__error-name {
+        top: -28px;
+    }
+
+    .profile__labels-container {
+        padding-bottom: 296px;
+    }
+}

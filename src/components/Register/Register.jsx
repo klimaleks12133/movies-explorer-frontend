@@ -1,17 +1,17 @@
 import './Register.css';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
-import FormValidation from '../Hooks/FormValidation';
+import FormValidation from '../../hooks/FormValidation';
 import logo from '../../image/logo.svg';
 
-const Register = ({ register }) => {
+const Register = ({ registerUser }) => {
     const { values, handleChange, resetForm, errors, isValid } =
         FormValidation();
 
-    function handleSubmit(e) {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        register(values);
-    }
+        registerUser(values);
+    };
 
     useEffect(() => {
         resetForm();
@@ -50,7 +50,7 @@ const Register = ({ register }) => {
                                 required
                                 minLength="2"
                                 maxLength="30"
-                                pattern="^[A-Za-zА-Яа-яЁё /s -]+$"
+                                pattern={'^[а-яА-Яa-zA-Z0-9]+$'}
                                 placeholder="Введите имя"
                             />
                             <span className="register__error">{errors.name || ''}</span>
@@ -100,7 +100,6 @@ const Register = ({ register }) => {
                     <Link
                         to="/signin"
                         className="register__link"
-                        onClick={register}
                     >
                         Войти
                     </Link>

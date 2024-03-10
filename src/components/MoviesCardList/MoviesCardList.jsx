@@ -1,24 +1,23 @@
-import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
-import films from '../../utils/films';
-
-function MoviesCardList() {
-    return (
-        <section className='movies-cards'>
-            <ul className='movies-cards__list'>
-                {films.map((films, index) => {
-                    return (
-                        <MoviesCard
-                            key={index}
-                            image={films.image}
-                            name={films.nameRU}
-                        />
-                    );
-                })}
-            </ul>
-            <button className="movies-cards__button" type="button">Ещё</button>
-        </section>
-    )
-}
-
+import './MoviesCardList.css';
+const MoviesCardList = ({ movies }) => {
+  return (
+    <section className="movies-cards">
+      <ul className="movies-cards__list">
+        {movies.map((movie) => (
+          <MoviesCard
+            movie={movie}
+            key={movie.movieId}
+          />
+        ))}
+      </ul>
+      <button
+        type="button"
+        className="movies-cards__add-button"
+      >
+        Ещё
+      </button>
+    </section>
+  );
+};
 export default MoviesCardList;
