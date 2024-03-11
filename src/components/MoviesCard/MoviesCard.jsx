@@ -1,11 +1,25 @@
-import useFormWithValidation from '../../hooks/useFormWithValidation';
+import FormValidation from '../../hooks/FormValidation';
 import { durationFormat } from '../../utils/utils';
 import './MoviesCard.css';
 import { useLocation } from 'react-router-dom';
 
-const MoviesCard = ({ movie }) => {
-  const { values } = useFormWithValidation();
+const MoviesCard = ({
+  movie,
+  onToggleSave,
+  onDeleteSave,
+  checkSavedMovies,
+}) => {
+  const { values } = FormValidation();
   const path = useLocation().pathname;
+  const isSaved = checkSavedMovies(movie);
+
+  const handleSaveClick = () => {
+    !isSaved && onToggleSave(movie);
+  };
+
+  const handleDeleteClick = () => {
+    onDeleteSave(movie);
+  };
 
   return (
     <>
@@ -31,7 +45,8 @@ const MoviesCard = ({ movie }) => {
                 className="movies-card__input"
                 type="checkbox"
                 value={values}
-                // onClick={handleSaveClick}
+                onChange={!isSaved ? handleSaveClick : handleDeleteClick}
+                checked={isSaved}
               />
               <span className="movies-card__checkbox"></span>
             </label>
@@ -41,7 +56,7 @@ const MoviesCard = ({ movie }) => {
               className="movies-card__button movies-card__button_type_unsave"
               aria-label="Удалить фильм из сохранённых"
               title="Удалить фильм из сохранённых"
-              // onClick={handleDeleteClick}
+              onClick={handleDeleteClick}
             ></button>
           )}
         </div>
@@ -52,4 +67,5 @@ const MoviesCard = ({ movie }) => {
     </>
   );
 };
+
 export default MoviesCard;

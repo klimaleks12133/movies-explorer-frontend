@@ -2,15 +2,23 @@ import './Profile.css';
 import FormValidation from '../../hooks/FormValidation';
 import { useContext, useState } from 'react';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
+import { useMoviesContext } from '../../contexts/MoviesContext';
 
-
-export default function Profile({ onClick, updateUser }) {
+export default function Profile({ onLogOut, updateUser }) {
   const currentUser = useContext(CurrentUserContext);
+  const { resetMoviesContext } = useMoviesContext();
+
+  const handleLogOut = () => {
+    onLogOut();
+    resetMoviesContext();
+  };
+
   const { values, handleChange, errors, isValid } = FormValidation({
     name: currentUser.name,
     email: currentUser.email,
   });
   const [isEditProfile, setIsEditProfile] = useState(false);
+  const [isRequesting, setIsRequesting] = useState(false);
 
   const openEditProfile = (e) => {
     e.preventDefault();
@@ -19,9 +27,14 @@ export default function Profile({ onClick, updateUser }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateUser(values).then(() => {
-      setIsEditProfile(false);
-    });
+    setIsRequesting(true);
+    updateUser(values)
+      .then(() => {
+        setIsEditProfile(false);
+      })
+      .finally(() => {
+        setIsRequesting(false);
+      });
   };
 
   const requirementValidity =
@@ -47,8 +60,9 @@ export default function Profile({ onClick, updateUser }) {
 
               <input
                 name="name"
-                className={`profile__input ${errors.name && 'profile__input_error'
-                  }`}
+                className={`profile__input ${
+                  errors.name && 'profile__input_error'
+                }`}
                 onChange={handleChange}
                 value={values.name}
                 type="text"
@@ -68,8 +82,9 @@ export default function Profile({ onClick, updateUser }) {
               <span className="profile__label-text">E-mail</span>
               <input
                 name="email"
-                className={`profile__input ${errors.email && 'profile__input_error'
-                  }`}
+                className={`profile__input ${
+                  errors.email && 'profile__input_error'
+                }`}
                 onChange={handleChange}
                 value={values.email}
                 disabled={!isEditProfile}
@@ -92,7 +107,7 @@ export default function Profile({ onClick, updateUser }) {
               <button
                 type="button"
                 className="profile__button-exit"
-                onClick={onClick}
+                onClick={handleLogOut}
               >
                 Выйти из аккаунта
               </button>
@@ -101,12 +116,8 @@ export default function Profile({ onClick, updateUser }) {
             <div className="profile__button-container">
               <button
                 type="submit"
-                className={
-                  !requirementValidity
-                    ? 'profile__button-save'
-                    : 'profile__button-save profile__button-save_disabled'
-                }
-                disabled={requirementValidity ? true : false}
+                className="profile__button-save"
+                disabled={requirementValidity || isRequesting}
               >
                 Сохранить
               </button>

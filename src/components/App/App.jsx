@@ -6,27 +6,34 @@ import Movies from '../Movies/Movies';
 import Profile from '../Profile/Profile';
 import Register from '../Register/Register';
 import SavedMovies from '../SavedMovies/SavedMovies';
+
 import './App.css';
 import NotFound from '../NotFound/NotFound';
+
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
+import { MoviesProvider } from '../../contexts/MoviesContext';
+
 import ProtectedRoutes from '../../utils/ProtectedRoutes';
 import api from '../../utils/MainApi';
 import Preloader from '../Preloader/Preloader';
 import InfoTooltip from '../InfoTooltip/InfoTooltip';
-import { MOVIES_URL, getMovies } from '../../utils/MoviesApi';
-import { correctMovieFormat } from '../../utils/correctMovieFormat';
+import { correctMovieFormat } from '../../utils/utils';
+import { getMovies } from '../../utils/MoviesApi';
 
 const App = () => {
   const path = useLocation().pathname;
   const headerPaths = ['/', '/movies', '/saved-movies', '/profile'];
   const footerPaths = ['/', '/movies', '/saved-movies'];
+
   const navigate = useNavigate();
+
   // Стейты состояния пользователя
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState(localStorage.getItem('jwt'));
   const [currentUser, setCurrentUser] = useState({});
+
   // Стейты ошибок
   const [loginError, setLoginError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -34,7 +41,8 @@ const App = () => {
     status: '',
     message: '',
   });
-  const [movies, setMovies] = useState(MOVIES_URL);
+  const [movies, setMovies] = useState(returnLocalFilms());
+  const [savedMovies, setSavedMovies] = useState([]);
 
   const [isOpenInfoTooltip, setIsOpenInfoTooltip] = useState(false);
 
@@ -42,7 +50,9 @@ const App = () => {
   const closeAllPopups = () => {
     setIsOpenInfoTooltip(false);
   };
+
   const isBurgerOpened = false;
+
   const goBack = () => {
     navigate(-1);
   };
@@ -68,11 +78,10 @@ const App = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      Promise.all([api.getUserInfo(), getMovies()])
-        .then(([user, movie]) => {
+      Promise.all([api.getUserInfo(), api.getSavedMovies()])
+        .then(([user, savedMovies]) => {
           setCurrentUser(user);
-          const newMovies = correctMovieFormat(movie);
-          setMovies(newMovies);
+          setSavedMovies(savedMovies.reverse());
         })
         .catch((err) => {
           console.log(err);
@@ -83,58 +92,100 @@ const App = () => {
     }
   }, [isLoggedIn]);
 
-  // Регистрация, авторизация =================================================>
-  const registerUser = (userData) => {
+  // Функционал============
+  const addMovieToSavedMovies = (movie) => {
     api
-      .registerUser(userData)
+      .createMovie(movie)
+      .then((movie) => {
+        setSavedMovies([...savedMovies, movie]);
+      })
+      .catch(console.error);
+  };
+
+  const deleteMovieToSavedMovies = (movie) => {
+    const movieId =
+      movie._id || savedMovies.find((i) => i.movieId === movie.movieId)._id;
+    api
+      .deleteMovie(movieId)
       .then(() => {
-        setIsOpenInfoTooltip(true);
-        setIsStatus({
-          status: true,
-          message: 'Вы успешно зарегистрировались!',
-        });
-        navigate('/');
-        navigate('/sign-in', { replace: true });
+        setSavedMovies((prevSavedMovies) =>
+          prevSavedMovies.filter((savedMovie) => savedMovie._id !== movieId)
+        );
       })
-      .catch((err) => {
-        setIsOpenInfoTooltip(true);
-        setIsStatus({
-          status: false,
-          message: 'Что-то пошло не так! Попробуйте ещё раз.',
-        });
-        console.log(err);
-      });
+      .catch(console.error);
   };
-  const loginUser = (loginData) => {
-    api
-      .loginUser(loginData)
-      .then((res) => {
-        setIsOpenInfoTooltip(true);
-        setIsStatus({
-          status: true,
-          message: 'Вы успешно вошли!',
-        });
-        setToken(res.token);
-        setIsLoggedIn(true);
-        api.setAuthHeaders(res.token);
-        localStorage.setItem('jwt', res.token);
-        navigate('/');
+
+  const getAllMovies = () => {
+    getMovies()
+      .then((newMovies) => {
+        const formattedMovies = correctMovieFormat(newMovies);
+        setMovies(formattedMovies);
+        localStorage.setItem('movies', JSON.stringify(formattedMovies));
       })
-      .catch((err) => {
-        setIsOpenInfoTooltip(true);
-        setIsStatus({
-          status: false,
-          message: 'Что-то пошло не так! Попробуйте ещё раз.',
-        });
-        console.log(err);
-        setLoginError('Что-то пошло не так! Попробуйте ещё раз.');
-      });
+      .catch(console.error);
   };
+
+  function returnLocalFilms() {
+    return JSON.parse(localStorage.getItem('movies') ?? '[]');
+  }
+
+  function checkSavedMovies(movie) {
+    return savedMovies.some(
+      (i) => i._id === movie._id || i.movieId === movie.movieId
+    );
+  }
+
+  // Регистрация, авторизация =================================================>
+  const registerUser = async (userData) => {
+    try {
+      await api.registerUser(userData);
+      setIsOpenInfoTooltip(true);
+      setIsStatus({
+        status: true,
+        message: 'Вы успешно зарегистрировались!',
+      });
+      loginUser({ email: userData.email, password: userData.password });
+    } catch (err) {
+      setIsOpenInfoTooltip(true);
+      setIsStatus({
+        status: false,
+        message: 'Что-то пошло не так! Попробуйте ещё раз.',
+      });
+      console.log(err);
+    }
+  };
+
+  const loginUser = async (loginData) => {
+    try {
+      const res = await api.loginUser(loginData);
+      setIsOpenInfoTooltip(true);
+      setIsStatus({
+        status: true,
+        message: 'Вы успешно вошли!',
+      });
+      setToken(res.token);
+      setIsLoggedIn(true);
+      api.setAuthHeaders(res.token);
+      localStorage.setItem('jwt', res.token);
+
+      navigate('/movies');
+    } catch (err) {
+      setIsOpenInfoTooltip(true);
+      setIsStatus({
+        status: false,
+        message: 'Что-то пошло не так! Попробуйте ещё раз.',
+      });
+      console.log(err);
+      setLoginError('Что-то пошло не так! Попробуйте ещё раз.');
+    }
+  };
+
   const logOut = () => {
-    localStorage.removeItem('jwt');
+    localStorage.clear();
     setIsLoggedIn(false);
     setToken('');
     setMovies([]);
+    setSavedMovies([]);
     setCurrentUser({});
     navigate('/');
   };
@@ -167,74 +218,95 @@ const App = () => {
   }
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <div className="app">
-        {headerPaths.includes(path) && (
-          <Header
-            isLoggedIn={isLoggedIn}
-            isBurgerOpened={isBurgerOpened}
-          />
-        )}
-        <Routes>
-          <Route
-            path="/signin"
-            element={
-              <Login
-                isLoggedIn={isLoggedIn}
-                loginUser={loginUser}
-                errorMessage={loginError}
-                title="Вход"
-                buttonText="Войти"
-              />
-            }
-          ></Route>
-          <Route
-            path="/signup"
-            element={
-              <Register
-                isLoggedIn={isLoggedIn}
-                registerUser={registerUser}
-                title={'Регистрация'}
-                buttonText={'Зарегистрироваться'}
-              />
-            }
-          ></Route>
-          <Route
-            path="/"
-            element={<Main />}
-          ></Route>
-          <Route element={<ProtectedRoutes isLoggedIn={isLoggedIn} />}>
-            <Route
-              path="/movies"
-              element={<Movies movies={movies} />}
-            ></Route>
-            <Route
-              path="/saved-movies"
-              element={<SavedMovies movies={movies} />}
-            ></Route>
-            <Route
-              path="/profile"
-              element={
-                <Profile
-                  onClick={logOut}
-                  updateUser={updateUser}
-                />
-              }
-            ></Route>
-            <Route
-              path="*"
-              element={<NotFound onBack={goBack} />}
+      <MoviesProvider>
+        <div className="app">
+          {headerPaths.includes(path) && (
+            <Header
+              isLoggedIn={isLoggedIn}
+              isBurgerOpened={isBurgerOpened}
             />
-          </Route>
-        </Routes>
-        {footerPaths.includes(path) && <Footer />}
-        <InfoTooltip
-          isRegister={isStatus}
-          isOpen={isOpenInfoTooltip}
-          onClose={closeAllPopups}
-          alt={'Статус'}
-        />
-      </div>
+          )}
+          <Routes>
+            <Route element={<ProtectedRoutes isLoggedIn={!isLoggedIn} />}>
+              <Route
+                path="/signin"
+                element={
+                  <Login
+                    isLoggedIn={isLoggedIn}
+                    loginUser={loginUser}
+                    errorMessage={loginError}
+                    title="Вход"
+                    buttonText="Войти"
+                  />
+                }
+              ></Route>
+              <Route
+                path="/signup"
+                element={
+                  <Register
+                    isLoggedIn={isLoggedIn}
+                    registerUser={registerUser}
+                    title={'Регистрация'}
+                    buttonText={'Зарегистрироваться'}
+                  />
+                }
+              ></Route>
+            </Route>
+            <Route
+              path="/"
+              element={<Main />}
+            ></Route>
+
+            <Route element={<ProtectedRoutes isLoggedIn={isLoggedIn} />}>
+              <Route
+                path="/movies"
+                element={
+                  <Movies
+                    getMovies={getAllMovies}
+                    movies={movies}
+                    onToggleSave={addMovieToSavedMovies}
+                    onDeleteSave={deleteMovieToSavedMovies}
+                    checkSavedMovies={checkSavedMovies}
+                  />
+                }
+              ></Route>
+              <Route
+                path="/saved-movies"
+                element={
+                  <SavedMovies
+                    movies={savedMovies}
+                    onDeleteSave={deleteMovieToSavedMovies}
+                    checkSavedMovies={checkSavedMovies}
+                  />
+                }
+              ></Route>
+
+              <Route
+                path="/profile"
+                element={
+                  <Profile
+                    onLogOut={logOut}
+                    updateUser={updateUser}
+                  />
+                }
+              ></Route>
+              <Route
+                path="*"
+                element={<NotFound onBack={goBack} />}
+              />
+            </Route>
+          </Routes>
+          {footerPaths.includes(path) && <Footer />}
+          <InfoTooltip
+            isRegister={isStatus}
+            isOpen={isOpenInfoTooltip}
+            onClose={closeAllPopups}
+            alt={'Статус'}
+          />
+        </div>
+      </MoviesProvider>
     </CurrentUserContext.Provider>
   );
 };
+
 export default App;
