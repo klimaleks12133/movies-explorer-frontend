@@ -1,6 +1,6 @@
 import './FilterCheckbox.css';
 
-const FilterCheckbox = ({ isChecked, onCheckboxChange }) => {
+function  FilterCheckbox ({ isChecked, onCheckboxChange })  {
   return (
     <>
       <label

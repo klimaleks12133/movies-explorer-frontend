@@ -4,7 +4,7 @@ import './SavedMovies.css';
 import { useMoviesContext } from '../../contexts/MoviesContext';
 import { useState } from 'react';
 
-const SavedMovies = ({ movies, onDeleteSave, checkSavedMovies }) => {
+function  SavedMovies ({ movies, onDeleteSave, checkSavedMovies }) {
   const { searched, setSearched } = useMoviesContext();
 
   const [searchQuerySave, setSearchQuerySave] = useState('');

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import logo from '../../image/logo.svg';
 import FormValidation from '../../hooks/FormValidation';
 
-const Login = ({ loginUser }) => {
+function  Login ({ loginUser }) {
   const [isRequesting, setIsRequesting] = useState(false);
   const { values, handleChange, resetForm, errors, isValid } =
   FormValidation();

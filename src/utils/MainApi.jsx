@@ -41,7 +41,7 @@ class MainApi {
 }
 
 const api = new MainApi({
-    url: 'https://api.movies.diploma.nomoredomains.work',
+    url: 'api.diplom-klimaleks.nomoredomainswork.ru',
     headers: {
         'Content-Type': 'application/json',
     },

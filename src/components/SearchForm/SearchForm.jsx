@@ -2,12 +2,12 @@ import './SearchForm.css';
 import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
 import FormValidation from '../../hooks/FormValidation';
 
-const SearchForm = ({
+function  SearchForm  ({
   onSearch,
   onShortFilmChange,
   shortFilm,
   searchQuery = '',
-}) => {
+}) {
   const { values, handleChange } = FormValidation({
     search: searchQuery,
   });

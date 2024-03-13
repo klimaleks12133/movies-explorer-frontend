@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import FormValidation from '../../hooks/FormValidation';
 import logo from '../../image/logo.svg';
 
-const Register = ({ registerUser }) => {
+function  Register ({ registerUser }) {
   const [isRequesting, setIsRequesting] = useState(false);
   const { values, handleChange, resetForm, errors, isValid } =
   FormValidation();

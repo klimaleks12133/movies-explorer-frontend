@@ -4,7 +4,7 @@ import infoToltipSuccess from '../../image/Union.svg';
 import infoToltipFailure from '../../image/Union-krestik.svg';
 import { usePopupClose } from '../../hooks/usePopupClose';
 
-const InfoTooltip = ({ onClose, isOpen, isRegister }) => {
+function  InfoTooltip ({ onClose, isOpen, isRegister }) {
   usePopupClose(isOpen, onClose);
   return (
     <div className={`popup ${isOpen ? 'popup_opened' : ''}`}>

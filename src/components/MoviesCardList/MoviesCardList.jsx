@@ -8,7 +8,7 @@ import {
   SCREEN_SIZE,
 } from '../../utils/constants';
 
-const MoviesCardList = ({
+function MoviesCardList({
   movies,
   onToggleSave,
   onDeleteSave,
@@ -16,7 +16,7 @@ const MoviesCardList = ({
   searchQuery,
   shortFilm,
   searched,
-}) => {
+}) {
   const screenWidth = useResize();
   let cardsToShow;
 

@@ -22,7 +22,7 @@ import InfoTooltip from '../InfoTooltip/InfoTooltip';
 import { correctMovieFormat } from '../../utils/utils';
 import { getMovies } from '../../utils/MoviesApi';
 
-const App = () => {
+function  App () {
   const path = useLocation().pathname;
   const headerPaths = ['/', '/movies', '/saved-movies', '/profile'];
   const footerPaths = ['/', '/movies', '/saved-movies'];

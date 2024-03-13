@@ -3,13 +3,13 @@ import SearchForm from '../SearchForm/SearchForm';
 import './Movies.css';
 import { useMoviesContext } from '../../contexts/MoviesContext';
 
-const Movies = ({
+function Movies({
   movies,
   onToggleSave,
   onDeleteSave,
   checkSavedMovies,
   getMovies,
-}) => {
+}) {
   const {
     searchQuery,
     setSearchQuery,

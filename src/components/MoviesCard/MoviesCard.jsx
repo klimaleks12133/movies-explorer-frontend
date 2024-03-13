@@ -3,12 +3,12 @@ import { durationFormat } from '../../utils/utils';
 import './MoviesCard.css';
 import { useLocation } from 'react-router-dom';
 
-const MoviesCard = ({
+function MoviesCard({
   movie,
   onToggleSave,
   onDeleteSave,
   checkSavedMovies,
-}) => {
+}) {
   const { values } = FormValidation();
   const path = useLocation().pathname;
   const isSaved = checkSavedMovies(movie);
