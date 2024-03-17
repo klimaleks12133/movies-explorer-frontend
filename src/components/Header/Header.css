@@ -28,13 +28,17 @@
   height: 38px;
 }
 
+.header__logo {
+  transition: all 0.3s ease;
+}
+
+.header__logo:hover {
+  transform: rotate(45deg);
+}
+
 @media screen and (max-width: 800px) {
   .header__container {
-    padding: 18px 48px 18px 30px;
-  }
-
-  .header {
-    max-width: 768px;
+    padding: 18px 30px;
   }
 }
 

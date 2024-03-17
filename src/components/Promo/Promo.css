@@ -17,6 +17,10 @@
   flex-direction: row-reverse;
 }
 
+.promo__logo {
+  max-width: 100%;
+}
+
 .promo__about-project {
   display: flex;
   flex-direction: column;
@@ -96,7 +100,6 @@
     padding: 70px 10px;
     padding-bottom: 30px;
   }
-
   .promo__logo {
     width: 210px;
   }
