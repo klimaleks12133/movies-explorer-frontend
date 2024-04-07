@@ -1,21 +1,18 @@
+import Footer from '../Footer/Footer';
+import Header from '../Header/Header';
+import Login from '../Login/Login';
+import Main from '../Main/Main';
+import Movies from '../Movies/Movies';
+import Profile from '../Profile/Profile';
+import Register from '../Register/Register';
+import SavedMovies from '../SavedMovies/SavedMovies';
 import './App.css';
+import NotFound from '../NotFound/NotFound';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-import Header from '../Header/Header';
-import Main from '../Main/Main';
-import Footer from '../Footer/Footer';
-import Movies from '../Movies/Movies';
-import Register from '../Register/Register';
-import Profile from '../Profile/Profile';
-import SavedMovies from '../SavedMovies/SavedMovies';
-import NotFound from '../NotFound/NotFound';
-import Login from '../Login/Login';
-
-
 function App() {
   const navigate = useNavigate();
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const logOut = () => {
@@ -49,7 +46,7 @@ function App() {
       {headerPaths.includes(path) && (
         <Header
           logIn={logIn}
-          loggedIn={isLoggedIn}
+          isLoggedIn={isLoggedIn}
           isBurgerOpened={isBurgerOpened}
         />
       )}
@@ -68,7 +65,12 @@ function App() {
         ></Route>
         <Route
           path="/profile"
-          element={<Profile isLoggedIn={isLoggedIn} onClick={logOut} />}
+          element={
+            <Profile
+              isLoggedIn={isLoggedIn}
+              onClick={logOut}
+            />
+          }
         ></Route>
         <Route
           path="/signin"
@@ -87,4 +89,5 @@ function App() {
     </div>
   );
 };
+
 export default App;

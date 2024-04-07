@@ -1,13 +1,13 @@
 import './Promo.css';
 import logo from '../../image/landing-logo.svg';
 
-export default function Promo() {
+function Promo() {
   return (
     <section className="promo">
       <div className="promo__container">
         <img
           src={logo}
-          alt="Лого - Земной шар"
+          alt="Лого"
           className="promo__logo"
         />
         <div className="promo__about-project">
@@ -28,4 +28,6 @@ export default function Promo() {
       </div>
     </section>
   );
-}
+};
+
+export default Promo;
