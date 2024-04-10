@@ -8,8 +8,15 @@ import Register from '../Register/Register';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import './App.css';
 import NotFound from '../NotFound/NotFound';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+import { MovieContext } from "../../contexts/MovieContext";
+import { Route, Link, Navigate } from "react-router-dom";
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
+import { moviesApi } from "../../utils/MoviesApi";
+import { mainApi } from "../../utils/MainApi";
+import { useState, useEffect } from "react";
+import * as constants from "../../utils/constants";
+import InfoTooltip from "../InfoTooltip/InfoTooltip.jsx";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -44,7 +51,7 @@ function App() {
   );
   const [currentWidth, setCurrentWidth] = useState(window.innerWidth);
   const baseUrl = "https://api.nomoreparties.co";
-  const history = useHistory();
+  const history = Navigate();
   const [isInputDisabled, setIsInputDisabled] = useState(false);
   const [searchStringIsMissed, setSearchStringIsMissed] = useState(
     !localStorage.getItem("stringToSearch")
@@ -316,61 +323,101 @@ function App() {
           savedMovies: savedMovies,
         }}
       >
-        <div className="app">
-          <Switch>
+        <main className="page">
+          <Link>
             <Route exact path="/">
               <Header
-                logIn={logIn}
-                isLoggedIn={isLoggedIn}
-                isBurgerOpened={isBurgerOpened}
+                loggedIn={loggedIn}
+                isBurgerMenuOpened={isBurgerMenuOpened}
+                setIsBurgerMenuOpened={setIsBurgerMenuOpened}
               />
-      )}
-              <Routes>
-                <Route
-                  path="/"
-                  element={<Main />}
-                ></Route>
-                <Route
-                  path="/movies"
-                  element={<Movies isLoggedIn={isLoggedIn} />}
-                ></Route>
-                <Route
-                  path="/saved-movies"
-                  element={<SavedMovies isLoggedIn={isLoggedIn} />}
-                ></Route>
-                <Route
-                  path="/profile"
-                  element={
-                    <Profile
-                      isLoggedIn={isLoggedIn}
-                      onClick={logOut}
-                    />
-                  }
-                ></Route>
-                <Route
-                  path="/signin"
-                  element={<Login
-                    onEnterUser={handleSignInSubmit}
-                    isInputDisabled={isInputDisabled} />}
-                ></Route>
-                <Route
-                  path="/signup"
-                  element={<Register
-                    onAddUser={handleRegisterSubmit}
-                    isInputDisabled={isInputDisabled} />}
-                ></Route>
-                <Route
-                  path="*"
-                  element={<NotFound onBack={goBack} />}
-                />
-              </Routes>
-              {footerPaths.includes(path) && <Footer />}
+              <Main />
+              <Footer />
             </Route>
-          </Switch>
-        </div>
+
+            <Route path="/signup">
+              <Register
+                onAddUser={handleRegisterSubmit}
+                isInputDisabled={isInputDisabled}
+              />
+            </Route>
+
+            <Route path="/signin">
+              <Login
+                onEnterUser={handleSignInSubmit}
+                isInputDisabled={isInputDisabled}
+              />
+            </Route>
+
+            <ProtectedRoute
+              path="/movies"
+              component={Movies}
+              loggedIn={loggedIn}
+              isBurgerMenuOpened={isBurgerMenuOpened}
+              setIsBurgerMenuOpened={setIsBurgerMenuOpened}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+              movieIsFound={movieIsFound}
+              setMovieIsFound={setMovieIsFound}
+              savedMovies={savedMovies}
+              setSavedMovies={setSavedMovies}
+              movieList={moviesArrayForRender}
+              baseUrl={baseUrl}
+              onLike={handleLikeClick}
+              onDislike={handleDislikeClick}
+              onMoreMoviesClick={showMoreMovies}
+              onSearch={searchMovies}
+              allMoviesAreShown={allMoviesAreShown}
+              lastSearchingString={lastSearchingString}
+              setLastSearchingString={setLastSearchingString}
+              shortFilmsOnlyStatus={shortFilmsOnlyStatus}
+              setShortFilmsOnlyStatus={setShortFilmsOnlyStatus}
+              searchStringIsMissed={searchStringIsMissed}
+              setSearchStringIsMissed={setSearchStringIsMissed}
+            ></ProtectedRoute>
+
+            <ProtectedRoute
+              path="/saved-movies"
+              component={SavedMovies}
+              loggedIn={loggedIn}
+              isBurgerMenuOpened={isBurgerMenuOpened}
+              setIsBurgerMenuOpened={setIsBurgerMenuOpened}
+              setMovieIsFound={setMovieIsFound}
+              savedMovies={savedMovies}
+              movieList={filteredSavedMovies}
+              baseUrl={baseUrl}
+              onLike={handleLikeClick}
+              onDislike={handleDeleteFromSaved}
+              onSearch={handleFindSavedMovies}
+            ></ProtectedRoute>
+
+            <ProtectedRoute
+              path="/profile"
+              component={Profile}
+              loggedIn={loggedIn}
+              isBurgerMenuOpened={isBurgerMenuOpened}
+              setIsBurgerMenuOpened={setIsBurgerMenuOpened}
+              onUpdateUser={handleUpdateUser}
+              onSignOut={handleSignOut}
+              setInfoPopupMessage={setInfoPopupMessage}
+              setIsPopupOpen={setIsPopupOpen}
+              setIsResultSuccess={setIsResultSuccess}
+            ></ProtectedRoute>
+
+            <Route path="*">
+              <NotFound />
+            </Route>
+          </Link>
+          <InfoTooltip
+            isPopupOpen={isPopupOpen}
+            messageText={infoPopupMessage}
+            isResultSuccess={isResultSuccess}
+            onClose={closePopup}
+          />
+        </main>
       </MovieContext.Provider>
     </CurrentUserContext.Provider>
   );
-};
+}
 
 export default App;

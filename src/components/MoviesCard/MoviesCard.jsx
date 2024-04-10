@@ -46,7 +46,6 @@ function MoviesCard({ card, baseUrl, onLike, onDislike, savedMovies }) {
         </article>
         <div className="movies-card__description">
           <h2 className="movies-card__title">{card.nameRU}</h2>
-          {path === '/movies' ? (
             <label className="movies-card__label">
               <input
                 className="movies-card__input"
@@ -54,14 +53,12 @@ function MoviesCard({ card, baseUrl, onLike, onDislike, savedMovies }) {
               />
               <span className="movies-card__checkbox"></span>
             </label>
-          ) : (
             <button
               type="button"
               className="movies-card__button movies-card__button_unsave"
               aria-label="Удалить фильм из сохранённых"
               title="Удалить фильм из сохранённых"
             ></button>
-          )}
         </div>
         <span className="movies-card__duration">{`${filmDurationHours}ч ${filmDurationMinutes}м`}</span>
       </li>
