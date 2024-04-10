@@ -2,11 +2,11 @@ import './Login.css';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../image/logo.svg';
-import useFormWithValidation from '../../components/hooks/useFormWithValidation';
+import { useForm } from 'react-hook-form';
 
 function Login({ logIn }) {
   const { values, handleChange, resetForm, errors, isValid } =
-    useFormWithValidation();
+  useForm({mode:"onChange"});
 
   function handleSubmit(e) {
     e.preventDefault();

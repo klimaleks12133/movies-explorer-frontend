@@ -14,28 +14,25 @@ function Burger() {
       className={`${!isActiveBurger ? 'burger' : 'burger burger_type_active'}`}
     >
       <nav
-        className={`${
-          !isActiveBurger
+        className={`${!isActiveBurger
             ? 'burger__navigation'
             : 'burger__navigation burger__navigation_type_active'
-        }`}
+          }`}
       >
         <div className="burger__container">
           <button
             type="button"
             onClick={handleOpenBurger}
-            className={`${
-              !isActiveBurger
+            className={`${!isActiveBurger
                 ? 'burger__button'
                 : 'burger__button burger__button_type_active'
-            }`}
+              }`}
           >
             <span
-              className={`${
-                !isActiveBurger
+              className={`${!isActiveBurger
                   ? 'burger__span'
                   : 'burger__span burger__span_type_active'
-              }`}
+                }`}
             ></span>
           </button>
         </div>

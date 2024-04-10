@@ -1,8 +1,33 @@
 import './MoviesCard.css';
-import { useLocation } from 'react-router-dom';
+import React from "react";
+import { Route } from "react-router-dom";
 
-function MoviesCard(props) {
-  const path = useLocation().pathname;
+function MoviesCard({ card, baseUrl, onLike, onDislike, savedMovies }) {
+  const isLiked = savedMovies.some(item => (item.movieId === card.id));
+  const filmDurationHours = Math.round(card.duration / 60);
+  const filmDurationMinutes = card.duration % 60;
+
+  function handleLikeClick() {
+    onLike(
+      {
+        "country": card.country,
+        "director": card.director,
+        "duration": card.duration,
+        "year": card.year,
+        "description": card.description,
+        "image": card.image.url,
+        "trailerLink": card.trailerLink,
+        "nameRU": card.nameRU,
+        "nameEN": card.nameEN,
+        "thumbnail": card.image.previewUrl,
+        "movieId": card.id
+      }
+    );
+  }
+
+  function handleDislikeClick() {
+    onDislike(card);
+  }
 
   return (
     <>
@@ -14,14 +39,13 @@ function MoviesCard(props) {
             href="/"
           >
             <img
-              src={props.image}
-              alt={props.name}
               className="movies-card__image"
+              src={`${baseUrl}${card.image.url || card.image}`} alt={card.nameRU}
             />
           </a>
         </article>
         <div className="movies-card__description">
-          <h2 className="movies-card__title">{props.name}</h2>
+          <h2 className="movies-card__title">{card.nameRU}</h2>
           {path === '/movies' ? (
             <label className="movies-card__label">
               <input
@@ -39,7 +63,7 @@ function MoviesCard(props) {
             ></button>
           )}
         </div>
-        <span className="movies-card__duration">1ч42м</span>
+        <span className="movies-card__duration">{`${filmDurationHours}ч ${filmDurationMinutes}м`}</span>
       </li>
     </>
   );

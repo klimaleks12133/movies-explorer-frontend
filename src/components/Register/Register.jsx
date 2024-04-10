@@ -1,12 +1,12 @@
 import './Register.css';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
-import useFormWithValidation from '../../components/hooks/useFormWithValidation';
+import { useForm } from 'react-hook-form';
 import logo from '../../image/logo.svg';
 
 function Register({ register }) {
   const { values, handleChange, resetForm, errors, isValid } =
-    useFormWithValidation();
+  useForm({mode:"onChange"});
 
   function handleSubmit(e) {
     e.preventDefault();

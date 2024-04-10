@@ -1,8 +1,44 @@
+import React from "react";
 import './Profile.css';
-import useFormWithValidation from '../../components/hooks/useFormWithValidation';
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+import { useForm } from 'react-hook-form';
 
-function Profile({onClick, isLoggedIn}) {
-  const { values, handleChange, errors, isValid } = useFormWithValidation();
+function Profile({onUpdateUser, onSignOut, setInfoTooltipMessage, setIsPopupOpen, setIsResultSuccess }) {
+
+  const [isReductionMode, setIsReductionMode] = React.useState(false);
+  const [isDisabled, setIsDisabled] = React.useState(true);
+  const currentUser = React.useContext(CurrentUserContext);
+
+  const {
+    register,
+    formState: { errors, isValid, isDirty, },
+    handleSubmit,
+  } = useForm({ mode: "onChange", defaultValues: { name: currentUser.name, email: currentUser.email } });
+
+  function handleEnableReduction(e) {
+    e.preventDefault();
+    setIsDisabled(false);
+    setIsReductionMode(true);
+  }
+
+  function handleSignOut(e) {
+    e.preventDefault();
+    onSignOut();
+  }
+
+  const onSubmit = (data) => {
+    if ((data.name !== currentUser.name) || (data.email !== currentUser.email)) {
+      onUpdateUser({ name: data.name, email: data.email });
+      setIsReductionMode(false);
+      setIsDisabled(true);
+      setIsResultSuccess(true);
+      setInfoTooltipMessage("Новые данные успешно сохранены");
+      setIsPopupOpen(true);
+    } else {
+      setInfoTooltipMessage("Данные не измененились");
+      setIsPopupOpen(true);
+    }
+  }
 
   return (
     <main className="main">
@@ -11,8 +47,9 @@ function Profile({onClick, isLoggedIn}) {
           className="profile__form"
           name="profile"
           noValidate
+          onSubmit={handleSubmit(onSubmit)}
         >
-          <h1 className="profile__title">Привет, Александр!</h1>
+          <h1 className="profile__title">{`Привет, ${currentUser.name}!`}</h1>
           <div className="profile__labels-container">
             <label
               className="profile__label"
@@ -23,14 +60,22 @@ function Profile({onClick, isLoggedIn}) {
                 name="name"
                 className={`profile__input ${errors.name && 'profile__input_error'
                   }`}
-                onChange={handleChange}
-                value={values.name || ''}
-                type="text"
-                required
-                minLength="2"
-                maxLength="30"
-                pattern="^[A-Za-zА-Яа-яЁё /s -]+$"
-                placeholder="Введите новое имя"
+                {...register("name", {
+                  minLength: {
+                    value: 2,
+                    message: "Имя должно содержать не менее 2 знаков"
+                  },
+                  maxLength: {
+                    value: 30,
+                    message: "Имя должно содержать не более 30 знаков"
+                  },
+                  pattern: {
+                    value: /^[A-Za-zА-Яа-я ]+$/,
+                    message: "Поле Имя заполнено некорректно"
+                  },
+                  required: "Поле Имя должно быть заполнено"
+                })}
+                disabled={isDisabled}
               />
             </label>
             <span className="profile__error-name">{errors.name || ''}</span>
@@ -43,32 +88,44 @@ function Profile({onClick, isLoggedIn}) {
                 name="email"
                 className={`profile__input ${errors.email && 'profile__input_error'
                   }`}
-                onChange={handleChange}
-                value={values.email || ''}
+                {...register('email', {
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Поле Email заполнено некорректно"
+                  },
+                  required: "Поле Email должно быть заполнено"
+                })}
                 type="email"
                 required
                 placeholder="Введите новую почту"
+                disabled={isDisabled}
               />
             </label>
             <span className="profile__error">{errors.email || ''}</span>
           </div>
           <div className="profile__button-container">
-            <button
-              type="submit"
-              className={`profile__button-edit ${!isValid && 'profile__button-edit_disabled'
-                }`}
-              disabled={!isValid ? true : false}
-            >
-              Редактировать
-            </button>
-            <button
-              type="submit"
-              className="profile__button-exit"
-              onClick={onClick}
-              isLoggedIn={isLoggedIn}
-            >
-              Выйти из аккаунта
-            </button>
+            {!isReductionMode ? (
+              <div className="profile__button-default">
+                <button
+                  className="profile__button-edit"
+                  onClick={handleEnableReduction}
+                >
+                  Редактировать
+                </button>
+                <button className="profile__button-exit" onClick={handleSignOut}>
+                  Выйти из аккаунта
+                </button>
+              </div>
+            ) : (
+              <button
+                className={`profile__button-save${(!isValid || !isDirty) ? " profile__button-save_disabled" : ""
+                  }`}
+                type="submit"
+                disabled={!isValid || !isDirty}
+              >
+                Сохранить
+              </button>
+            )}
           </div>
         </form>
       </section>
