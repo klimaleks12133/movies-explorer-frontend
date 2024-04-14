@@ -4,18 +4,17 @@ import { Link } from 'react-router-dom';
 import logo from '../../image/logo.svg';
 import { useForm } from 'react-hook-form';
 
-function Login({ logIn }) {
-  const { values, handleChange, resetForm, errors, isValid } =
-  useForm({mode:"onChange"});
+function Login({ onEnterUser, isInputDisabled }) {
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    logIn(values);
+  const {
+    register,
+    formState: { errors, isValid },
+    handleSubmit,
+  } = useForm({ mode: "onChange" });
+
+  const onSubmit = (data) => {
+    onEnterUser({ email: data.email, password: data.password });
   }
-
-  useEffect(() => {
-    resetForm();
-  }, [resetForm]);
 
   return (
     <main className="main">
@@ -37,18 +36,26 @@ function Login({ logIn }) {
             />
           </Link>
           <h1 className="login__title">Рады видеть!</h1>
-          <div className="login__labels-container">
+          <div className="login__labels-container" onSubmit={handleSubmit(onSubmit)}>
             <label className="login__label">
               <span className="login__label-text">E-mail</span>
               <input
                 name="email"
                 className={`login__input ${errors.email && 'login__input_error'
                   }`}
-                onChange={handleChange}
-                value={values.email || ''}
+                // onChange={handleChange}
+                // value={values.email || ''}
+                {...register('email', {
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Поле Email заполнено некорректно"
+                  },
+                  required: "Поле Email должно быть заполнено"
+                })}
+                id="email"
                 type="email"
                 required
-                placeholder="Введите почту"
+                disabled={isInputDisabled}
               />
               <span className="login__error">{errors.email || ''}</span>
             </label>
@@ -58,13 +65,22 @@ function Login({ logIn }) {
                 name="password"
                 className={`login__input ${errors.password && 'login__input_error'
                   }`}
-                onChange={handleChange}
-                value={values.password || ''}
+                // onChange={handleChange}
+                // value={values.password || ''}
+                {...register("password", {
+                  minLength: {
+                    value: 2,
+                    message: "Пароль должен содержать не менее 2 знаков"
+                  },
+                  maxLength: {
+                    value: 30,
+                    message: "Пароль должен содержать не более 30 знаков"
+                  },
+                  required: "Поле Пароль должно быть заполнено"
+                })}
                 type="password"
-                required
-                minLength="6"
-                maxLength="30"
                 placeholder="Введите пароль"
+                disabled={isInputDisabled}
               />
               <span className="login__error">{errors.password || ''}</span>
             </label>
@@ -73,7 +89,7 @@ function Login({ logIn }) {
             type="submit"
             className={`login__button ${!isValid && 'login__button_disabled'}`}
             disabled={!isValid}
-            onClick={logIn}
+          // onClick={logIn}
           >
             Войти
           </button>

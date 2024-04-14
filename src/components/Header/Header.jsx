@@ -3,8 +3,8 @@ import Logo from '../../image/logo.svg';
 import Navigation from '../Navigation/Navigation';
 import { Link, useLocation } from 'react-router-dom';
 
-function Header({isLoggedIn}) {
-  const location = useLocation();
+function Header({ isLoggedIn }) {
+  const location = useLocation().pathname;
 
   return (
     <header
@@ -22,7 +22,6 @@ function Header({isLoggedIn}) {
             alt="Логотип"
           />
         </Link>
-
         <Navigation isLoggedIn={isLoggedIn} />
       </div>
     </header>

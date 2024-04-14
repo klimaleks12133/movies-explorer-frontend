@@ -1,6 +1,6 @@
 import './NotFound.css';
 
-function NotFound ({ onBack }) {
+function NotFound({ onBack }) {
   return (
     <section className="not-found">
       <p className="not-found__text-container">

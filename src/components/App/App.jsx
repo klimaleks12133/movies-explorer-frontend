@@ -10,7 +10,7 @@ import './App.css';
 import NotFound from '../NotFound/NotFound';
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { MovieContext } from "../../contexts/MovieContext";
-import { Route, Link, Navigate } from "react-router-dom";
+import { Route, useLocation, useNavigate, Routes } from "react-router-dom";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import { moviesApi } from "../../utils/MoviesApi";
 import { mainApi } from "../../utils/MainApi";
@@ -19,6 +19,9 @@ import * as constants from "../../utils/constants";
 import InfoTooltip from "../InfoTooltip/InfoTooltip.jsx";
 
 function App() {
+  const path = useLocation().pathname;
+  const headerPaths = ['/', '/movies', '/saved-movies', '/profile'];
+  const footerPaths = ['/', '/movies', '/saved-movies'];
   const [isLoading, setIsLoading] = useState(true);
   let moviesIsPresent = JSON.parse(
     localStorage.getItem("searchedMoviesArray")
@@ -51,7 +54,7 @@ function App() {
   );
   const [currentWidth, setCurrentWidth] = useState(window.innerWidth);
   const baseUrl = "https://api.nomoreparties.co";
-  const history = Navigate();
+  const history = useNavigate();
   const [isInputDisabled, setIsInputDisabled] = useState(false);
   const [searchStringIsMissed, setSearchStringIsMissed] = useState(
     !localStorage.getItem("stringToSearch")
@@ -323,91 +326,104 @@ function App() {
           savedMovies: savedMovies,
         }}
       >
-        <main className="page">
-          <Link>
-            <Route exact path="/">
-              <Header
-                loggedIn={loggedIn}
-                isBurgerMenuOpened={isBurgerMenuOpened}
-                setIsBurgerMenuOpened={setIsBurgerMenuOpened}
-              />
-              <Main />
-              <Footer />
-            </Route>
-
-            <Route path="/signup">
+        <main className="app">
+          {headerPaths.includes(path) && (
+            <Header
+              loggedIn={loggedIn}
+              isBurgerMenuOpened={isBurgerMenuOpened}
+              setIsBurgerMenuOpened={setIsBurgerMenuOpened}
+            />
+          )}
+          <Routes>
+            <Route path="/signup" element={(
               <Register
                 onAddUser={handleRegisterSubmit}
                 isInputDisabled={isInputDisabled}
               />
-            </Route>
+            )}
+            ></Route>
 
-            <Route path="/signin">
+            <Route path="/signin" element={(
               <Login
                 onEnterUser={handleSignInSubmit}
                 isInputDisabled={isInputDisabled}
               />
-            </Route>
-
-            <ProtectedRoute
-              path="/movies"
-              component={Movies}
-              loggedIn={loggedIn}
-              isBurgerMenuOpened={isBurgerMenuOpened}
-              setIsBurgerMenuOpened={setIsBurgerMenuOpened}
-              isLoading={isLoading}
-              setIsLoading={setIsLoading}
-              movieIsFound={movieIsFound}
-              setMovieIsFound={setMovieIsFound}
-              savedMovies={savedMovies}
-              setSavedMovies={setSavedMovies}
-              movieList={moviesArrayForRender}
-              baseUrl={baseUrl}
-              onLike={handleLikeClick}
-              onDislike={handleDislikeClick}
-              onMoreMoviesClick={showMoreMovies}
-              onSearch={searchMovies}
-              allMoviesAreShown={allMoviesAreShown}
-              lastSearchingString={lastSearchingString}
-              setLastSearchingString={setLastSearchingString}
-              shortFilmsOnlyStatus={shortFilmsOnlyStatus}
-              setShortFilmsOnlyStatus={setShortFilmsOnlyStatus}
-              searchStringIsMissed={searchStringIsMissed}
-              setSearchStringIsMissed={setSearchStringIsMissed}
-            ></ProtectedRoute>
-
-            <ProtectedRoute
-              path="/saved-movies"
-              component={SavedMovies}
-              loggedIn={loggedIn}
-              isBurgerMenuOpened={isBurgerMenuOpened}
-              setIsBurgerMenuOpened={setIsBurgerMenuOpened}
-              setMovieIsFound={setMovieIsFound}
-              savedMovies={savedMovies}
-              movieList={filteredSavedMovies}
-              baseUrl={baseUrl}
-              onLike={handleLikeClick}
-              onDislike={handleDeleteFromSaved}
-              onSearch={handleFindSavedMovies}
-            ></ProtectedRoute>
-
-            <ProtectedRoute
-              path="/profile"
-              component={Profile}
-              loggedIn={loggedIn}
-              isBurgerMenuOpened={isBurgerMenuOpened}
-              setIsBurgerMenuOpened={setIsBurgerMenuOpened}
-              onUpdateUser={handleUpdateUser}
-              onSignOut={handleSignOut}
-              setInfoPopupMessage={setInfoPopupMessage}
-              setIsPopupOpen={setIsPopupOpen}
-              setIsResultSuccess={setIsResultSuccess}
-            ></ProtectedRoute>
-
-            <Route path="*">
+            )}
+            ></Route>
+            <Route
+              path="/"
+              element={<Main />}
+            ></Route>
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute
+                  path="/movies"
+                  component={Movies}
+                  loggedIn={loggedIn}
+                  isBurgerMenuOpened={isBurgerMenuOpened}
+                  setIsBurgerMenuOpened={setIsBurgerMenuOpened}
+                  isLoading={isLoading}
+                  setIsLoading={setIsLoading}
+                  movieIsFound={movieIsFound}
+                  setMovieIsFound={setMovieIsFound}
+                  savedMovies={savedMovies}
+                  setSavedMovies={setSavedMovies}
+                  movieList={moviesArrayForRender}
+                  baseUrl={baseUrl}
+                  onLike={handleLikeClick}
+                  onDislike={handleDislikeClick}
+                  onMoreMoviesClick={showMoreMovies}
+                  onSearch={searchMovies}
+                  allMoviesAreShown={allMoviesAreShown}
+                  lastSearchingString={lastSearchingString}
+                  setLastSearchingString={setLastSearchingString}
+                  shortFilmsOnlyStatus={shortFilmsOnlyStatus}
+                  setShortFilmsOnlyStatus={setShortFilmsOnlyStatus}
+                  searchStringIsMissed={searchStringIsMissed}
+                  setSearchStringIsMissed={setSearchStringIsMissed}
+                ></ProtectedRoute>}
+            />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute
+                  path="/saved-movies"
+                  component={SavedMovies}
+                  loggedIn={loggedIn}
+                  isBurgerMenuOpened={isBurgerMenuOpened}
+                  setIsBurgerMenuOpened={setIsBurgerMenuOpened}
+                  setMovieIsFound={setMovieIsFound}
+                  savedMovies={savedMovies}
+                  movieList={filteredSavedMovies}
+                  baseUrl={baseUrl}
+                  onLike={handleLikeClick}
+                  onDislike={handleDeleteFromSaved}
+                  onSearch={handleFindSavedMovies}
+                ></ProtectedRoute>}
+            />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute
+                  path="/profile"
+                  component={Profile}
+                  loggedIn={loggedIn}
+                  isBurgerMenuOpened={isBurgerMenuOpened}
+                  setIsBurgerMenuOpened={setIsBurgerMenuOpened}
+                  onUpdateUser={handleUpdateUser}
+                  onSignOut={handleSignOut}
+                  setInfoPopupMessage={setInfoPopupMessage}
+                  setIsPopupOpen={setIsPopupOpen}
+                  setIsResultSuccess={setIsResultSuccess}
+                ></ProtectedRoute>}
+            />
+            <Route path="*" element={(
               <NotFound />
-            </Route>
-          </Link>
+            )}
+            ></Route>
+          </Routes>
+          {footerPaths.includes(path) && <Footer />}
           <InfoTooltip
             isPopupOpen={isPopupOpen}
             messageText={infoPopupMessage}
@@ -416,7 +432,7 @@ function App() {
           />
         </main>
       </MovieContext.Provider>
-    </CurrentUserContext.Provider>
+    </CurrentUserContext.Provider >
   );
 }
 

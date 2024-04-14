@@ -1,5 +1,5 @@
 import './SearchForm.css';
-import React from 'react';
+import { useState, useEffect } from 'react';
 import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
 
 function SearchForm({
@@ -13,7 +13,7 @@ function SearchForm({
   setIsLoading,
 }) {
 
-  const [searchingMovieTitle, setSearchingMovieTitle] = React.useState(lastSearchingString ? lastSearchingString : "");
+  const [searchingMovieTitle, setSearchingMovieTitle] = useState(lastSearchingString || "");
 
   function handleChangeMovieTitle(e) {
     e.preventDefault();
@@ -21,30 +21,34 @@ function SearchForm({
   }
 
   function handleChangeShortFilmsOnlyStatus() {
-    setShortFilmsOnlyStatus(shortFilmsOnlyStatus ? false : true);
-    if (searchingMovieTitle.length === 0) {
-      if (!isSavedMoviesPage) {
-        setSearchStringIsMissed(true);
-      }
+    setShortFilmsOnlyStatus(!shortFilmsOnlyStatus);
+    updateMovieIsFoundState();
+  }
+
+  function handleSearchMovies(e) {
+    e.preventDefault();
+    if (isSavedMoviesPage || searchingMovieTitle.length > 0) {
+      setSearchStringIsMissed(false);
+      onSearch(searchingMovieTitle, shortFilmsOnlyStatus);
+    } else {
+      setSearchStringIsMissed(true);
+      setIsLoading(false);
+      setMovieIsFound(false);
+    }
+  }
+
+  function updateMovieIsFoundState() {
+    if (searchingMovieTitle.length === 0 && !isSavedMoviesPage) {
+      setSearchStringIsMissed(true);
       setMovieIsFound(false);
     } else {
       setMovieIsFound(true);
     }
   }
 
-  function handleSearchMovies(e) {
-    e.preventDefault();
-    if (isSavedMoviesPage) {
-      onSearch(searchingMovieTitle, shortFilmsOnlyStatus);
-    } else if (searchingMovieTitle.length === 0) {
-      setSearchStringIsMissed(true);
-      setIsLoading(false);
-      setMovieIsFound(false);
-    } else {
-      setSearchStringIsMissed(false);
-      onSearch(searchingMovieTitle, shortFilmsOnlyStatus);
-    }
-  }
+  useEffect(() => {
+    updateMovieIsFoundState();
+  }, [searchingMovieTitle, isSavedMoviesPage]);
   return (
     <section className='search'>
       <form className='search__form'
@@ -57,7 +61,7 @@ function SearchForm({
           type="text"
           placeholder="Фильм"
           autoComplete="off"
-          value={searchingMovieTitle || ""}
+          value={searchingMovieTitle}
           onChange={handleChangeMovieTitle}
         />
         <span className="search__error"></span>

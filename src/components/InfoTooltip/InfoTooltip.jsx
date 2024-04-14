@@ -1,6 +1,7 @@
 import React from "react";
 import successImage from '../../image/success.png';
 import failImage from '../../image/fail.png';
+import './InfoTooltip.css';
 
 function InfoTooltip({ isPopupOpen, messageText, isResultSuccess, onClose}) {
   const popupMessageText = messageText;

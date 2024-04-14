@@ -1,6 +1,6 @@
 import './MoviesCard.css';
 import React from "react";
-import { Route } from "react-router-dom";
+// import { Routes } from "react-router-dom";
 
 function MoviesCard({ card, baseUrl, onLike, onDislike, savedMovies }) {
   const isLiked = savedMovies.some(item => (item.movieId === card.id));
@@ -25,9 +25,9 @@ function MoviesCard({ card, baseUrl, onLike, onDislike, savedMovies }) {
     );
   }
 
-  function handleDislikeClick() {
-    onDislike(card);
-  }
+  // function handleDislikeClick() {
+  //   onDislike(card);
+  // }
 
   return (
     <>

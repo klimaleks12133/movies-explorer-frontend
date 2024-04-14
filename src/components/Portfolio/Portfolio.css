@@ -1,6 +1,7 @@
 .portfolio {
   width: 100%;
   font-family: 'Inter', 'SuisseIntl', sans-serif;
+  background-color: #202020;
 }
 
 .portfolio__container {

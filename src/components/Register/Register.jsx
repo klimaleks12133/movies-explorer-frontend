@@ -4,18 +4,32 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import logo from '../../image/logo.svg';
 
-function Register({ register }) {
-  const { values, handleChange, resetForm, errors, isValid } =
-  useForm({mode:"onChange"});
+// function Register({ register }) {
+//   const { values, handleChange, resetForm, errors, isValid } =
+//     useForm({ mode: "onChange" });
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    register(values);
-  }
+//   function handleSubmit(e) {
+//     e.preventDefault();
+//     register(values);
+//   }
 
-  useEffect(() => {
-    resetForm();
-  }, [resetForm]);
+//   useEffect(() => {
+//     resetForm();
+//   }, [resetForm]);
+
+function Register({ onAddUser, isInputDisabled }) {
+
+  const {
+    register,
+    formState: { errors, isValid },
+    handleSubmit,
+  } = useForm({mode:"onChange"});
+
+  const onSubmit = (data) => {
+    onAddUser({ name: data.name, email: data.email, password: data.password });
+  };
+
+
 
   return (
     <main className="main">
@@ -37,21 +51,22 @@ function Register({ register }) {
             />
           </Link>
           <h1 className="register__title">Добро пожаловать!</h1>
-          <div className="register__labels-container">
+          <div className="register__labels-container" onSubmit={handleSubmit(onSubmit)}>
             <label className="register__label">
               <span className="register__label-text">Имя</span>
               <input
                 name="name"
                 className={`register__input ${errors.name && 'register__input_error'
                   }`}
-                onChange={handleChange}
-                value={values.name || ''}
+                // onChange={handleChange}
+                // value={values.name || ''}
                 type="text"
                 required
                 minLength="2"
                 maxLength="30"
                 pattern="^[A-Za-zА-Яа-яЁё /s -]+$"
                 placeholder="Введите имя"
+                disabled={isInputDisabled}
               />
               <span className="register__error">{errors.name || ''}</span>
             </label>
@@ -61,11 +76,12 @@ function Register({ register }) {
                 name="email"
                 className={`register__input ${errors.email && 'register__input_error'
                   }`}
-                onChange={handleChange}
-                value={values.email || ''}
+                // onChange={handleChange}
+                // value={values.email || ''}
                 type="email"
                 required
                 placeholder="Введите почту"
+                disabled={isInputDisabled}
               />
               <span className="register__error">{errors.email || ''}</span>
             </label>
@@ -75,13 +91,14 @@ function Register({ register }) {
                 name="password"
                 className={`register__input ${errors.password && 'register__input_error'
                   }`}
-                onChange={handleChange}
-                value={values.password || ''}
+                // onChange={handleChange}
+                // value={values.password || ''}
                 type="password"
                 required
                 minLength="6"
                 maxLength="30"
                 placeholder="Введите пароль"
+                disabled={isInputDisabled}
               />
               <span className="register__error">{errors.password || ''}</span>
             </label>
