@@ -6,17 +6,6 @@ class MainApi {
         this._headers = headers;
     }
 
-    _getResponseData(res) {
-        if (res.ok) {
-            return res.json();
-        }
-        return res.text()
-            .then((text) => {
-                throw new Error(text)
-            }
-            );
-    }
-
     postNewMovie(newMovieData) {
         return fetch(`${this._baseUrl}/movies`, {
             method: "POST",
@@ -27,13 +16,15 @@ class MainApi {
         });
     }
 
-    deleteMovie(movie) {
-        return fetch(`${this._baseUrl}/movies/${movie._id}`, {
-            method: "DELETE",
-            headers: this._headers,
-        }).then((res) => {
-            return this._getResponseData(res);
-        });
+    _getResponseData(res) {
+        if (res.ok) {
+            return res.json();
+        }
+        return res.text()
+            .then((text) => {
+                throw new Error(text)
+            }
+            );
     }
 
     register(name, email, password) {
@@ -46,6 +37,16 @@ class MainApi {
             body: JSON.stringify({ name, email, password })
         })
             .then((responce) => this._getResponseData(responce));
+    }
+
+    
+    deleteMovie(movie) {
+        return fetch(`${this._baseUrl}/movies/${movie._id}`, {
+            method: "DELETE",
+            headers: this._headers,
+        }).then((res) => {
+            return this._getResponseData(res);
+        });
     }
 
     signin(password, email) {
@@ -67,15 +68,6 @@ class MainApi {
             });
     }
 
-    setUserInfo(newData) {
-        return fetch(`${this._baseUrl}/users/me`, {
-            method: "PATCH",
-            headers: this._headers,
-            body: JSON.stringify(newData),
-        }).then((res) => {
-            return this._getResponseData(res);
-        });
-    }
 
     checkToken(token) {
         return fetch(`${this._baseUrl}/users/me`, {
@@ -92,6 +84,16 @@ class MainApi {
                 }
             });
     };
+
+    setUserInfo(newData) {
+        return fetch(`${this._baseUrl}/users/me`, {
+            method: "PATCH",
+            headers: this._headers,
+            body: JSON.stringify(newData),
+        }).then((res) => {
+            return this._getResponseData(res);
+        });
+    }
 
     getMovies() {
         return fetch(`${this._baseUrl}/movies`, {
