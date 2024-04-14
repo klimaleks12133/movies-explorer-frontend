@@ -59,23 +59,24 @@ function App() {
   const [searchStringIsMissed, setSearchStringIsMissed] = useState(
     !localStorage.getItem("stringToSearch")
   );
+  const [token, setToken] = useState(localStorage.getItem('jwt'));
 
   useEffect(() => {
-    const jwt = localStorage.getItem("token");
-    const checkTokenAndSetUser = async () => {
-      try {
-        if (jwt) {
-          const res = await mainApi.checkToken(jwt);
-          setCurrentUser(res);
-          setLoggedIn(true);
-        }
-      } catch (err) {
-        handleSignOut();
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
+    mainApi.setAuthHeaders(token);
+    mainApi
+      .getUserInfo()
+      .then((data) => {
+        setIsLoggedIn(true);
+        setCurrentUser(data);
+      })
+      .catch((err) => {
         console.log(err);
-      }
-    };
-    checkTokenAndSetUser();
-  }, []);
+      });
+  }, [token]);
 
   useEffect(() => {
     let timeoutId;
@@ -92,6 +93,23 @@ function App() {
     };
   }, []);
 
+
+  useEffect(() => {
+    if (loggedIn) {
+      Promise.all([mainApi.getUserInfo(), mainApi.getSavedMovies()])
+        .then(([user, savedMovies]) => {
+          setCurrentUser(user);
+          setSavedMovies(savedMovies.reverse());
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [loggedIn]);
+
   useEffect(() => {
     if (currentWidth >= constants.DESKTOP.width) {
       setRenderedMoviesQuantity(constants.DESKTOP.startingCount);
@@ -104,21 +122,6 @@ function App() {
       setMoreMoviesQuantity(constants.TABLET.moreCount);
     }
   }, [currentWidth]);
-
-  useEffect(() => {
-    if (loggedIn) {
-      mainApi.updateToken();
-      mainApi
-        .getMovies()
-        .then((res) => {
-          setSavedMovies(res);
-          setFilteredSavedMovies(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [loggedIn]);
 
   useEffect(() => {
     const IsLastMovieShown =
@@ -223,6 +226,18 @@ function App() {
     return savedMovies.find((item) => item.movieId === movie.id);
   };
 
+  function handleDeleteFromSaved(movie) {
+    mainApi
+      .deleteMovie(movie)
+      .then(() => {
+        setSavedMovies((state) => filterOutMovie(state, movie._id));
+        setFilteredSavedMovies((state) => filterOutMovie(state, movie._id));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   function handleDislikeClick(movie) {
     const { id } = movie;
     const movieToDelete = findMovieForDelete(movie);
@@ -247,21 +262,25 @@ function App() {
     return movieList.filter((movie) => movie._id !== movieId);
   };
 
-  function handleDeleteFromSaved(movie) {
-    mainApi
-      .deleteMovie(movie)
-      .then(() => {
-        setSavedMovies((state) => filterOutMovie(state, movie._id));
-        setFilteredSavedMovies((state) => filterOutMovie(state, movie._id));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
   const closePopup = () => {
     setInfoPopupMessage("");
     setIsPopupOpen(false);
+  };
+
+  const handleRegisterSubmit = async ({ name, email, password }) => {
+    setIsInputDisabled(true);
+    try {
+      const res = await mainApi.register(name, email, password);
+      await handleSignInSubmit({
+        email: res.email,
+        password: password,
+      });
+    } catch (err) {
+      setInfoPopupMessage("Ошибка при регистрации");
+      setIsPopupOpen(true);
+    } finally {
+      setIsInputDisabled(false);
+    }
   };
 
   const handleSignInSubmit = async ({ email, password }) => {
@@ -281,31 +300,6 @@ function App() {
     }
   };
 
-  const handleRegisterSubmit = async ({ name, email, password }) => {
-    setIsInputDisabled(true);
-    try {
-      const res = await mainApi.register(name, email, password);
-      await handleSignInSubmit({
-        email: res.email,
-        password: password,
-      });
-    } catch (err) {
-      setInfoPopupMessage("Ошибка при регистрации");
-      setIsPopupOpen(true);
-    } finally {
-      setIsInputDisabled(false);
-    }
-  };
-
-  const handleUpdateUser = async (newUserData) => {
-    try {
-      const res = await mainApi.setUserInfo(newUserData);
-      setCurrentUser(res);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const handleSignOut = () => {
     history.push("/");
     setLoggedIn(false);
@@ -316,6 +310,16 @@ function App() {
     setTimeout(() => {
       localStorage.clear();
     }, 500);
+  };
+
+
+  const handleUpdateUser = async (newUserData) => {
+    try {
+      const res = await mainApi.setUserInfo(newUserData);
+      setCurrentUser(res);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
