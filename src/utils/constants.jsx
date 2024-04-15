@@ -19,5 +19,7 @@ export const MOBILE = {
   moreCount: 2,
 };
 
+export const SHORTMOVIEDURATION = 40;
+
 export const commonServerError =
   "Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз";

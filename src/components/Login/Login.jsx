@@ -42,9 +42,8 @@ function Login({ onEnterUser, isInputDisabled }) {
               <input
                 name="email"
                 className={`login__input ${errors.email && 'login__input_error'
-                  }`}
-                // onChange={handleChange}
-                // value={values.email || ''}
+                  }`}                 /* onChange={handleChange}
+                value={values.email || ''} */
                 {...register('email', {
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -57,16 +56,16 @@ function Login({ onEnterUser, isInputDisabled }) {
                 required
                 disabled={isInputDisabled}
               />
-              <span className="login__error">{errors.email || ''}</span>
+                <span className="login__error">{errors.email || ''}</span>
             </label>
             <label className="login__label">
               <span className="login__label-text">Пароль</span>
               <input
                 name="password"
                 className={`login__input ${errors.password && 'login__input_error'
-                  }`}
-                // onChange={handleChange}
-                // value={values.password || ''}
+                  }`}                  
+                /* // onChange={handleChange}
+                // value={values.password || ''} */
                 {...register("password", {
                   minLength: {
                     value: 2,
@@ -82,7 +81,7 @@ function Login({ onEnterUser, isInputDisabled }) {
                 placeholder="Введите пароль"
                 disabled={isInputDisabled}
               />
-              <span className="login__error">{errors.password || ''}</span>
+                <span className="login__error">{errors.password || ''}</span>
             </label>
           </div>
           <button

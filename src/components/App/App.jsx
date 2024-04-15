@@ -28,7 +28,7 @@ function App() {
   );
   let movies = JSON.parse(localStorage.getItem("films")) || [];
   const [movieIsFound, setMovieIsFound] = useState(!!moviesIsPresent);
-  const [isBurgerMenuOpened, setIsBurgerMenuOpened] = useState(false);
+  const [isActiveBurger, setIsActiveBurger] = useState(false);
   const [savedMovies, setSavedMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState(
     JSON.parse(localStorage.getItem("searchedMoviesArray")) || []
@@ -52,63 +52,30 @@ function App() {
   const [shortFilmsOnlyStatus, setShortFilmsOnlyStatus] = useState(
     !!localStorage.getItem("shortMovieOnly")
   );
-  const [currentWidth, setCurrentWidth] = useState(window.innerWidth);
+  const [currentWidth] = useState(window.innerWidth);
   const baseUrl = "https://api.nomoreparties.co";
-  const history = useNavigate();
+  const navigate = useNavigate();
   const [isInputDisabled, setIsInputDisabled] = useState(false);
   const [searchStringIsMissed, setSearchStringIsMissed] = useState(
     !localStorage.getItem("stringToSearch")
   );
-  const [token, setToken] = useState(localStorage.getItem('jwt'));
 
   useEffect(() => {
-    if (!token) {
-      setIsLoading(false);
-      return;
-    }
-    mainApi.setAuthHeaders(token);
-    mainApi
-      .getUserInfo()
-      .then((data) => {
-        setIsLoggedIn(true);
-        setCurrentUser(data);
-      })
-      .catch((err) => {
+    const jwt = localStorage.getItem("token");
+    const checkTokenAndSetUser = async () => {
+      try {
+        if (jwt) {
+          const res = await mainApi.checkToken(jwt);
+          setCurrentUser(res);
+          setLoggedIn(true);
+        }
+      } catch (err) {
+        handleSignOut();
         console.log(err);
-      });
-  }, [token]);
-
-  useEffect(() => {
-    let timeoutId;
-    const handleResize = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        setCurrentWidth(window.innerWidth);
-      }, 200);
+      }
     };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      clearTimeout(timeoutId);
-    };
+    checkTokenAndSetUser();
   }, []);
-
-
-  useEffect(() => {
-    if (loggedIn) {
-      Promise.all([mainApi.getUserInfo(), mainApi.getSavedMovies()])
-        .then(([user, savedMovies]) => {
-          setCurrentUser(user);
-          setSavedMovies(savedMovies.reverse());
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
-  }, [loggedIn]);
 
   useEffect(() => {
     if (currentWidth >= constants.DESKTOP.width) {
@@ -122,6 +89,21 @@ function App() {
       setMoreMoviesQuantity(constants.TABLET.moreCount);
     }
   }, [currentWidth]);
+
+  useEffect(() => {
+    if (loggedIn) {
+      mainApi.updateToken();
+      mainApi
+        .getMovies()
+        .then((res) => {
+          setSavedMovies(res);
+          setFilteredSavedMovies(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [loggedIn]);
 
   useEffect(() => {
     const IsLastMovieShown =
@@ -180,7 +162,7 @@ function App() {
       const lowerCaseNameRU = item.nameRU.toLowerCase();
       const lowerCaseNameEN = item.nameEN.toLowerCase();
       return shortMovieOnly
-        ? (item.duration <= 40 && (lowerCaseNameRU.includes(lowerCaseSearchString) || lowerCaseNameEN.includes(lowerCaseSearchString)))
+        ? (item.duration <= constants.SHORTMOVIEDURATION && (lowerCaseNameRU.includes(lowerCaseSearchString) || lowerCaseNameEN.includes(lowerCaseSearchString)))
         : (lowerCaseNameRU.includes(lowerCaseSearchString) || lowerCaseNameEN.includes(lowerCaseSearchString));
     });
   };
@@ -200,7 +182,7 @@ function App() {
   };
   const handleFindSavedMovies = (stringToSearch, shortMovieOnly) => {
     const searchedMoviesArray = savedMovies.filter((item) => {
-      const isShortMovie = item.duration <= 40;
+      const isShortMovie = item.duration <= constants.SHORTMOVIEDURATION;
       const hasMatchingName = checkMovieName(item, stringToSearch);
       return shortMovieOnly ? (isShortMovie && hasMatchingName) : hasMatchingName;
     });
@@ -226,6 +208,10 @@ function App() {
     return savedMovies.find((item) => item.movieId === movie.id);
   };
 
+  function filterOutMovie(movieList, movieId) {
+    return movieList.filter((movie) => movie._id !== movieId);
+  };
+
   function handleDeleteFromSaved(movie) {
     mainApi
       .deleteMovie(movie)
@@ -238,33 +224,26 @@ function App() {
       });
   }
 
-  function handleDislikeClick(movie) {
-    const { id } = movie;
-    const movieToDelete = findMovieForDelete(movie);
-    mainApi.deleteMovie(movieToDelete)
-      .then(() => {
-        mainApi
-          .getMovies()
-          .then((res) => {
-            setSavedMovies(res);
-            setFilteredSavedMovies((state) => state.filter((m) => m.movieId !== id));
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  function filterOutMovie(movieList, movieId) {
-    return movieList.filter((movie) => movie._id !== movieId);
-  };
-
   const closePopup = () => {
     setInfoPopupMessage("");
     setIsPopupOpen(false);
+  };
+
+  const handleSignInSubmit = async ({ email, password }) => {
+    try {
+      const data = await mainApi.signin(password, email);
+      if (data) {
+        const res = await mainApi.checkToken(data.token);
+        setCurrentUser(res);
+        setLoggedIn(true);
+        navigate("/movies");
+      }
+    } catch (err) {
+      setInfoPopupMessage(
+        `Ошибка входа: ${err}. Проверьте вводимые данные и попробуйте еще раз.`
+      );
+      setIsPopupOpen(true);
+    }
   };
 
   const handleRegisterSubmit = async ({ name, email, password }) => {
@@ -283,25 +262,17 @@ function App() {
     }
   };
 
-  const handleSignInSubmit = async ({ email, password }) => {
+  const handleUpdateUser = async (newUserData) => {
     try {
-      const data = await mainApi.signin(password, email);
-      if (data) {
-        const res = await mainApi.checkToken(data.token);
-        setCurrentUser(res);
-        setLoggedIn(true);
-        history.push("/movies");
-      }
+      const res = await mainApi.setUserInfo(newUserData);
+      setCurrentUser(res);
     } catch (err) {
-      setInfoPopupMessage(
-        `Ошибка входа: ${err}. Проверьте вводимые данные и попробуйте еще раз.`
-      );
-      setIsPopupOpen(true);
+      console.log(err);
     }
   };
 
   const handleSignOut = () => {
-    history.push("/");
+    navigate("/");
     setLoggedIn(false);
     setLastSearchingString("");
     setMoviesArrayForRender([]);
@@ -310,16 +281,6 @@ function App() {
     setTimeout(() => {
       localStorage.clear();
     }, 500);
-  };
-
-
-  const handleUpdateUser = async (newUserData) => {
-    try {
-      const res = await mainApi.setUserInfo(newUserData);
-      setCurrentUser(res);
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   return (
@@ -334,8 +295,8 @@ function App() {
           {headerPaths.includes(path) && (
             <Header
               loggedIn={loggedIn}
-              isBurgerMenuOpened={isBurgerMenuOpened}
-              setIsBurgerMenuOpened={setIsBurgerMenuOpened}
+              isActiveBurger={isActiveBurger}
+              setIsActiveBurger={setIsActiveBurger}
             />
           )}
           <Routes>
@@ -365,8 +326,8 @@ function App() {
                   path="/movies"
                   component={Movies}
                   loggedIn={loggedIn}
-                  isBurgerMenuOpened={isBurgerMenuOpened}
-                  setIsBurgerMenuOpened={setIsBurgerMenuOpened}
+                  isActiveBurger={isActiveBurger}
+                  setIsActiveBurger={setIsActiveBurger}
                   isLoading={isLoading}
                   setIsLoading={setIsLoading}
                   movieIsFound={movieIsFound}
@@ -376,7 +337,6 @@ function App() {
                   movieList={moviesArrayForRender}
                   baseUrl={baseUrl}
                   onLike={handleLikeClick}
-                  onDislike={handleDislikeClick}
                   onMoreMoviesClick={showMoreMovies}
                   onSearch={searchMovies}
                   allMoviesAreShown={allMoviesAreShown}
@@ -395,8 +355,8 @@ function App() {
                   path="/saved-movies"
                   component={SavedMovies}
                   loggedIn={loggedIn}
-                  isBurgerMenuOpened={isBurgerMenuOpened}
-                  setIsBurgerMenuOpened={setIsBurgerMenuOpened}
+                  isActiveBurger={isActiveBurger}
+                  setIsActiveBurger={setIsActiveBurger}
                   setMovieIsFound={setMovieIsFound}
                   savedMovies={savedMovies}
                   movieList={filteredSavedMovies}
@@ -413,8 +373,8 @@ function App() {
                   path="/profile"
                   component={Profile}
                   loggedIn={loggedIn}
-                  isBurgerMenuOpened={isBurgerMenuOpened}
-                  setIsBurgerMenuOpened={setIsBurgerMenuOpened}
+                  isActiveBurger={isActiveBurger}
+                  setIsActiveBurger={setIsActiveBurger}
                   onUpdateUser={handleUpdateUser}
                   onSignOut={handleSignOut}
                   setInfoPopupMessage={setInfoPopupMessage}

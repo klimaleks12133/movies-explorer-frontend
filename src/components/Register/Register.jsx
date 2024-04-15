@@ -4,32 +4,17 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import logo from '../../image/logo.svg';
 
-// function Register({ register }) {
-//   const { values, handleChange, resetForm, errors, isValid } =
-//     useForm({ mode: "onChange" });
-
-//   function handleSubmit(e) {
-//     e.preventDefault();
-//     register(values);
-//   }
-
-//   useEffect(() => {
-//     resetForm();
-//   }, [resetForm]);
-
 function Register({ onAddUser, isInputDisabled }) {
 
   const {
     register,
     formState: { errors, isValid },
     handleSubmit,
-  } = useForm({mode:"onChange"});
+  } = useForm({ mode: "onChange" });
 
   const onSubmit = (data) => {
     onAddUser({ name: data.name, email: data.email, password: data.password });
   };
-
-
 
   return (
     <main className="main">
@@ -57,14 +42,24 @@ function Register({ onAddUser, isInputDisabled }) {
               <input
                 name="name"
                 className={`register__input ${errors.name && 'register__input_error'
-                  }`}
-                // onChange={handleChange}
+                  }`}                // onChange={handleChange}
                 // value={values.name || ''}
                 type="text"
+                {...register("name", {
+                  minLength: {
+                    value: 2,
+                    message: "Имя должно содержать не менее 2 знаков"},
+                  maxLength: {
+                    value: 30,
+                    message: "Имя должно содержать не более 30 знаков"
+                  },
+                  pattern: {
+                    value: /^[A-Za-zА-Яа-я ]+$/,
+                    message: "Поле Имя заполнено некорректно"
+                  },
+                  required: "Поле Имя должно быть заполнено"
+              })}
                 required
-                minLength="2"
-                maxLength="30"
-                pattern="^[A-Za-zА-Яа-яЁё /s -]+$"
                 placeholder="Введите имя"
                 disabled={isInputDisabled}
               />
@@ -75,10 +70,16 @@ function Register({ onAddUser, isInputDisabled }) {
               <input
                 name="email"
                 className={`register__input ${errors.email && 'register__input_error'
-                  }`}
-                // onChange={handleChange}
+                  }`}                // onChange={handleChange}
                 // value={values.email || ''}
                 type="email"
+                {...register('email', {
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Поле Email заполнено некорректно"
+                  },
+                  required: "Поле Email должно быть заполнено"
+                })}
                 required
                 placeholder="Введите почту"
                 disabled={isInputDisabled}
@@ -91,6 +92,16 @@ function Register({ onAddUser, isInputDisabled }) {
                 name="password"
                 className={`register__input ${errors.password && 'register__input_error'
                   }`}
+                  {...register("password", {
+                    minLength: {
+                      value: 2,
+                      message: "Пароль должен содержать не менее 2 знаков"},
+                    maxLength: {
+                      value: 30,
+                      message: "Пароль должен содержать не более 30 знаков"
+                    },
+                    required: "Поле Пароль должно быть заполнено"
+                })}
                 // onChange={handleChange}
                 // value={values.password || ''}
                 type="password"

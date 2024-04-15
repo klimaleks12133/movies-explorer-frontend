@@ -1,6 +1,11 @@
 import './NotFound.css';
+import { useNavigate  } from "react-router-dom";
 
-function NotFound({ onBack }) {
+function NotFound( ) {
+  const navigate = useNavigate()
+  const onBack = () => {
+    navigate.onBack()
+  }
   return (
     <section className="not-found">
       <p className="not-found__text-container">
