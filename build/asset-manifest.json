@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/static/css/main.61137a28.css",
+    "main.js": "/static/js/main.0d6188ec.js",
+    "static/media/landing-logo.svg": "/static/media/landing-logo.872d9c2d0ecc94b2b81e2bd67f0493b7.svg",
+    "static/media/Inter-Medium.woff2": "/static/media/Inter-Medium.a979d19cf3a8a16949ef.woff2",
+    "static/media/Inter-Medium.woff": "/static/media/Inter-Medium.9e45874532a23709f6c1.woff",
+    "static/media/Inter-Regular.woff": "/static/media/Inter-Regular.f8c4b51c613b8c0f88ea.woff",
+    "static/media/SuisseIntl-Regular.woff2": "/static/media/SuisseIntl-Regular.927d6c22cade78eafc3e.woff2",
+    "static/media/photo_2021-09-27_01-07-17.jpg": "/static/media/photo_2021-09-27_01-07-17.47187e3d75cbb4f6cbb3.jpg",
+    "static/media/Inter-Regular.woff2": "/static/media/Inter-Regular.6fcad65b7a8f7ffabb8e.woff2",
+    "static/media/SuisseIntl-Regular.woff": "/static/media/SuisseIntl-Regular.85b262da3072605331a1.woff",
+    "static/media/logo.svg": "/static/media/logo.f6cab7bf9c223562857b2e4c294b9813.svg",
+    "static/media/icon-main.svg": "/static/media/icon-main.a10dba0e621fec4c5ec0.svg",
+    "index.html": "/index.html",
+    "static/media/btn-close.svg": "/static/media/btn-close.212332bfed5cc4556914.svg",
+    "static/media/find.svg": "/static/media/find.a061586bda63b752a3c3.svg",
+    "static/media/link.svg": "/static/media/link.21d4a41cbd169bf0c5fe.svg",
+    "main.61137a28.css.map": "/static/css/main.61137a28.css.map",
+    "main.0d6188ec.js.map": "/static/js/main.0d6188ec.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.61137a28.css",
+    "static/js/main.0d6188ec.js"
+  ]
+}
