@@ -17,79 +17,65 @@ function Login({ onEnterUser, isInputDisabled }) {
   }
 
   return (
-    <main className="main">
-      <section className="login">
-        <form
-          className="login__form"
-          name="login"
-          noValidate
-          onSubmit={handleSubmit}
-        >
-          <Link
-            to="/"
-            className="login__link"
-          >
-            <img
-              src={logo}
-              alt="Логотип"
-              className="login__logo"
+    <section className="login">
+      <div className="login__form">
+        <Link to="/" className="login__link">
+          <img
+            className="login__logo"
+            src={logo}
+            alt="Логотип проекта Movies Explorer"
+          />
+        </Link>
+        <h1 className="login__title">Рады видеть!</h1>
+        <form className="login__labels-container" onSubmit={handleSubmit(onSubmit)}>
+          <label className="login__label">
+
+            <span className="login__label-text" htmlFor="email">
+              E-mail
+            </span>
+            <input
+              required
+              className="login__input login__input-error"
+              {...register('email', {
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Поле Email заполнено некорректно"
+                },
+                required: "Поле Email должно быть заполнено"
+              })}
+              id="email"
+              type="email"
+              disabled={isInputDisabled}
             />
-          </Link>
-          <h1 className="login__title">Рады видеть!</h1>
-          <div className="login__labels-container" onSubmit={handleSubmit(onSubmit)}>
-            <label className="login__label">
-              <span className="login__label-text">E-mail</span>
-              <input
-                name="email"
-                className={`login__input ${errors.email && 'login__input_error'
-                  }`}                 /* onChange={handleChange}
-                value={values.email || ''} */
-                {...register('email', {
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Поле Email заполнено некорректно"
-                  },
-                  required: "Поле Email должно быть заполнено"
-                })}
-                id="email"
-                type="email"
-                required
-                disabled={isInputDisabled}
-              />
-                <span className="login__error">{errors.email || ''}</span>
-            </label>
-            <label className="login__label">
-              <span className="login__label-text">Пароль</span>
-              <input
-                name="password"
-                className={`login__input ${errors.password && 'login__input_error'
-                  }`}                  
-                /* // onChange={handleChange}
-                // value={values.password || ''} */
-                {...register("password", {
-                  minLength: {
-                    value: 2,
-                    message: "Пароль должен содержать не менее 2 знаков"
-                  },
-                  maxLength: {
-                    value: 30,
-                    message: "Пароль должен содержать не более 30 знаков"
-                  },
-                  required: "Поле Пароль должно быть заполнено"
-                })}
-                type="password"
-                placeholder="Введите пароль"
-                disabled={isInputDisabled}
-              />
-                <span className="login__error">{errors.password || ''}</span>
-            </label>
-          </div>
+            <span className={`login__error${errors.email ? " login__error_active" : ""}`}>{errors.email ? errors.email.message : ""}</span>
+
+            <span className="login__label-text" htmlFor="password">
+              Пароль
+            </span>
+            <input
+              required
+              className="login__input login__input-error"
+              {...register("password", {
+                minLength: {
+                  value: 2,
+                  message: "Пароль должен содержать не менее 2 знаков"
+                },
+                maxLength: {
+                  value: 30,
+                  message: "Пароль должен содержать не более 30 знаков"
+                },
+                required: "Поле Пароль должно быть заполнено"
+              })}
+              id="password"
+              type="password"
+              disabled={isInputDisabled}
+            />
+            <span className={`login__error${errors.password ? " login__error_active" : ""}`}>{errors.password ? errors.password.message : ""}</span>
+          </label>
           <button
-            type="submit"
             className={`login__button ${!isValid && 'login__button_disabled'}`}
-            disabled={!isValid}
-          // onClick={logIn}
-          >
+            type="submit"
+            disabled={!isValid}>
             Войти
           </button>
           <span className="login__support">
@@ -102,9 +88,9 @@ function Login({ onEnterUser, isInputDisabled }) {
             </Link>
           </span>
         </form>
-      </section>
-    </main>
+      </div>
+    </section>
   );
-};
+}
 
 export default Login;

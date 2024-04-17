@@ -112,6 +112,10 @@
   left: 0;
 }
 
+.login__error_active {
+  opacity: 1;
+}
+
 .login__button {
   margin-top: auto;
   border-style: none;

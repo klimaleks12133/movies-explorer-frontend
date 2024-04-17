@@ -78,7 +78,8 @@ function Profile({onUpdateUser, onSignOut, setInfoTooltipMessage, setIsPopupOpen
                 disabled={isDisabled}
               />
             </label>
-            <span className="profile__error-name">{errors.name || ''}</span>
+            <span className={`profile__error-name${errors.name ? " profile__error-name_active" : ""}`}>{errors.name ? errors.name.message : ""}</span>
+            {/* <span className="profile__error-name">{errors.name || ''}</span> */}
             <label
               className="profile__label"
               type="email"
@@ -101,7 +102,8 @@ function Profile({onUpdateUser, onSignOut, setInfoTooltipMessage, setIsPopupOpen
                 disabled={isDisabled}
               />
             </label>
-            <span className="profile__error">{errors.email || ''}</span>
+            <span className={`pprofile__errorr${errors.email ? " profile__error_active" : ""}`}>{errors.email ? errors.email.message : ""}</span>
+            {/* <span className="profile__error">{errors.email || ''}</span> */}
           </div>
           <div className="profile__button-container">
             {!isReductionMode ? (
